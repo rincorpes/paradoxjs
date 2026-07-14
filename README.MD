@@ -216,14 +216,11 @@ Anything outside the top-level package entry should currently be treated as inte
 - Helper modules under `core/buildApp/*` and `core/buildElement/*`
 - Internal types that are not exported from the package root
 
-In practice, consumers should avoid imports like:
+Those paths expose implementation details rather than supported public API. The only documented consumer import style for this iteration is the package root:
 
 ```js
-import { addState } from "penrose-paradox/build/core/buildApp";
-import { RouterProps } from "penrose-paradox/build/core/Router";
+import Paradox from "penrose-paradox";
 ```
-
-Those paths expose implementation details rather than supported public API.
 
 ### TypeScript Note
 
@@ -231,6 +228,7 @@ Paradox does not yet have a finalized stable type export strategy. For now:
 
 - Runtime imports from the package root are supported
 - Deep-imported types should be treated as internal
+- If you need app-specific helper types today, prefer defining them in your own project instead of importing Paradox internals
 - Type exports will be revisited as part of the packaging and API cleanup work
 
 ## Documentation

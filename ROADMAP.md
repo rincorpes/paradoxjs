@@ -44,7 +44,7 @@ These ideas are not forbidden forever, but they are not the right center of grav
 - [x] Update README, package metadata, and examples to describe Paradox as a vanilla JavaScript utility library
 - [x] Define which APIs are stable, experimental, or internal
 - [x] Publish a modern package shape for current tooling
-- [ ] Remove or hide deep-import expectations from the docs
+- [x] Remove or hide deep-import expectations from the docs
 
 ## 2. DOM Utilities
 

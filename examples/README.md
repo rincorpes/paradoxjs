@@ -26,6 +26,14 @@ You can use each utility on its own:
 - Use `Router` for small multi-page or route-aware browser experiences
 - Use `pubsub` when different parts of a page need to communicate without tight coupling
 
+All documented consumer examples use the package root:
+
+```js
+import Paradox from "penrose-paradox";
+```
+
+Avoid building on deep internal paths from the published package, since they are intentionally not part of the supported public API.
+
 ## Router Example
 
 `Paradox.Router` is a small routing helper. It is best suited for simple client-side route matching, not for full application frameworks.
