@@ -39,23 +39,43 @@ Avoid building on deep internal paths from the published package, since they are
 
 ## Router Example
 
-`Paradox.Router` is a small routing helper. It is best suited for simple client-side route matching, not for full application frameworks.
+`Paradox.Router` is a small browser router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and light props injection without trying to be a framework.
 
 ```js
 import Paradox from "penrose-paradox";
 
 function Home({ root }) {
-  root.append(
+  root.replaceChildren(
     Paradox.buildElement("div", {
-      text: "Home page",
+      children: [
+        Paradox.buildElement("h1", {
+          text: "Home page",
+        }),
+        Paradox.buildElement("a", {
+          text: "About",
+          attributes: {
+            href: "/about",
+          },
+        }),
+      ],
     })
   );
 }
 
 function About({ root }) {
-  root.append(
+  root.replaceChildren(
     Paradox.buildElement("div", {
-      text: "About page",
+      children: [
+        Paradox.buildElement("h1", {
+          text: "About page",
+        }),
+        Paradox.buildElement("a", {
+          text: "Home",
+          attributes: {
+            href: "/",
+          },
+        }),
+      ],
     })
   );
 }
@@ -86,11 +106,15 @@ router.init().catch((error) => {
 
 Use the router when you want:
 
-- A tiny route matcher
-- Props injection per route
-- Support for simple layouts or route wrappers
+- Small SPA navigation in a browser
+- Same-origin anchor interception after `init()`
+- Dynamic params, query access, and optional cleanup per route
 
-Avoid treating it as a full SPA router until the router work in the roadmap is complete.
+Keep it small on purpose:
+
+- It is not trying to solve nested layouts, data loading, SSR, or transitions.
+- If a route handler returns a function, Paradox will call it before the next route renders.
+- Legacy `#/path` URLs still resolve on load, but normal path-based URLs are the preferred mode now.
 
 ## PubSub Example
 

@@ -272,6 +272,11 @@ describe('Paradox', () => {
       expect(typeof Router).toBe("function");
     });
 
+    async function waitForRouter() {
+      await Promise.resolve();
+      await Promise.resolve();
+    }
+
     function Home() {
       document.body.innerHTML = `<div>Home <a href="/about?hello=world">About</a></div>`;
     }
@@ -283,11 +288,17 @@ describe('Paradox', () => {
 
     beforeEach(() => {
       document.body.innerHTML = "";
+      window.history.replaceState({}, "", "/");
       router = new Router({ routes, baseUrl: "http://localhost" });
     });
 
-    describe("Objcet properties", () => {
+    afterEach(() => {
+      router.destroy();
+      document.body.innerHTML = "";
+      window.history.replaceState({}, "", "/");
+    });
 
+    describe("Objcet properties", () => {
       it("should have routes property", () => {
         expect(router.hasOwnProperty("routes")).toBe(true);
       });
@@ -315,11 +326,19 @@ describe('Paradox', () => {
       it("should have init method", () => {
         expect(typeof router.init).toBe("function");
       });
+
+      it("should have navigate method", () => {
+        expect(typeof router.navigate).toBe("function");
+      });
+
+      it("should have destroy method", () => {
+        expect(typeof router.destroy).toBe("function");
+      });
     });
 
     describe("init", () => {
-      beforeEach(() => {
-        router.init();
+      beforeEach(async () => {
+        await router.init();
       });
       
       it("should set the path", () => {
@@ -360,14 +379,202 @@ describe('Paradox', () => {
           { path: "/user/:id", component: Home },
         ];
 
-        beforeEach(() => {
+        beforeEach(async () => {
+          window.history.replaceState({}, "", "/user/123");
           userRouter = new Router({ routes, baseUrl: "http://localhost" });
-          userRouter.init();
+          await userRouter.init();
+        });
+
+        afterEach(() => {
+          userRouter.destroy();
+          window.history.replaceState({}, "", "/");
         });
 
         it("should set pathSegments", () => {
           expect(userRouter.routes[1].pathSegments).toEqual(["", "user", ":id"]);
         });
+
+        it("should set params for dynamic segments", () => {
+          expect(userRouter.params.get("id")).toBe("123");
+        });
+      });
+    });
+
+    describe("navigation", () => {
+      it("should re-run the route and cleanup on same-path navigation", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        let renderCount = 0;
+        let cleanupCount = 0;
+        const rerenderRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: `Home render ${renderCount}`,
+                  }),
+                );
+                renderCount += 1;
+
+                return () => {
+                  cleanupCount += 1;
+                };
+              },
+            },
+          ],
+        });
+
+        await rerenderRouter.init();
+        await rerenderRouter.navigate("/");
+
+        expect(renderCount).toBe(2);
+        expect(cleanupCount).toBe(1);
+        expect(root.textContent).toBe("Home render 1");
+
+        rerenderRouter.destroy();
+      });
+
+      it("should reset params when navigating away from a dynamic route", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+        window.history.replaceState({}, "", "/user/42");
+
+        const statefulRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/user/:id",
+              props: { root },
+              component: ({ root: outlet, params }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: `User ${params?.get("id")}`,
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await statefulRouter.init();
+        expect(statefulRouter.params.get("id")).toBe("42");
+
+        await statefulRouter.navigate("/about");
+
+        expect(statefulRouter.path).toBe("/about");
+        expect(statefulRouter.params.size).toBe(0);
+        expect(root.textContent).toBe("About page");
+
+        statefulRouter.destroy();
+      });
+
+      it("should intercept same-origin links after init", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        const appRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("a", {
+                    text: "About",
+                    attributes: {
+                      href: "/about",
+                    },
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await appRouter.init();
+
+        const link = root.querySelector("a");
+        link?.dispatchEvent(new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        }));
+        await waitForRouter();
+
+        expect(appRouter.path).toBe("/about");
+        expect(root.textContent).toBe("About page");
+
+        appRouter.destroy();
+      });
+
+      it("should render the active route on popstate", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        const appRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "Home page",
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await appRouter.init();
+        window.history.pushState({}, "", "/about");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+        await waitForRouter();
+
+        expect(appRouter.path).toBe("/about");
+        expect(root.textContent).toBe("About page");
+
+        appRouter.destroy();
       });
     });
   });

@@ -24,7 +24,7 @@ export default function Home(props: ExamplePageProps = {}) {
     Paradox.pubsub.unsubscribe("button-clicked", handlePubsubSubscription);
   }
 
-  root.append(
+  root.replaceChildren(
     Paradox.buildElement("div", {
       classList: "container",
       children: [

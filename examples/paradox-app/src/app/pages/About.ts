@@ -11,7 +11,7 @@ import MessageContainer from "../components/MessageContainer";
 export default function About(props: ExamplePageProps = {}) {
   const { root } = props;
   if (!root) return;
-  root.append(
+  root.replaceChildren(
     Paradox.buildElement("div", {
       classList: "container",
       children: [

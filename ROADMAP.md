@@ -56,10 +56,10 @@ These ideas are not forbidden forever, but they are not the right center of grav
 
 ## 3. Router
 
-- [ ] Make `Router` explicitly useful for simple SPA navigation
-- [ ] Fix route re-entry, param reset, and navigation lifecycle issues
-- [ ] Add support for link interception and `popstate`
-- [ ] Document the intended scope of the router so it stays intentionally small
+- [x] Make `Router` explicitly useful for simple SPA navigation
+- [x] Fix route re-entry, param reset, and navigation lifecycle issues
+- [x] Add support for link interception and `popstate`
+- [x] Document the intended scope of the router so it stays intentionally small
 
 ## 4. PubSub And Small Utilities
 

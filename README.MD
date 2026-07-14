@@ -316,64 +316,92 @@ Paradox.delegate(document, {
 
 ### Routes with `Paradox.Router`
 
-Paradox provides a simple router to handle the navigation between pages.
+`Paradox.Router` is a small History API router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and route props injection without trying to become an application framework.
 
 ```javascript
 import Paradox from "penrose-paradox";
 
-function Home(props) {
-  const { root } = props;
-  root.append(Paradox.buildElement("div", {
-    id: "home",
-    text: "Welcome to Paradox!",
-  }));
+function Home({ root }) {
+  root.replaceChildren(
+    Paradox.buildElement("div", {
+      children: [
+        Paradox.buildElement("h1", {
+          text: "Welcome to Paradox!",
+        }),
+        Paradox.buildElement("a", {
+          text: "About",
+          attributes: {
+            href: "/about?name=Paradox",
+          },
+        }),
+      ],
+    })
+  );
 }
 
-function About(props) {
-  const { name, root } = props;
-  root.append(Paradox.buildElement("div", {
-    id: "about",
-    text: `Paradox is a vanilla JavaScript utility library. This is the ${name} page.`,
-  }));
+function About({ root, query }) {
+  root.replaceChildren(
+    Paradox.buildElement("div", {
+      children: [
+        Paradox.buildElement("h1", {
+          text: `About ${query?.get("name") || ""}`.trim(),
+        }),
+        Paradox.buildElement("a", {
+          text: "Home",
+          attributes: {
+            href: "/",
+          },
+        }),
+      ],
+    })
+  );
 }
 
 const root = document.getElementById("root");
+const baseUrl = document.querySelector("base")?.href || window.location.origin;
 
 const routes = [
   {
     path: "/",
     component: Home,
-    props: {
-      root,
-    },
+    props: { root },
   },
   {
     path: "/about",
     component: About,
-    props: {
-      name: "About",
-      root,
-    },
+    props: { root },
   },
 ];
 
-const router = new Paradox.Router({ routes });
-router.init()
-  .then((path) => {
-    console.info(`The current path is: ${path}`);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+const router = new Paradox.Router({ routes, baseUrl });
+
+router.init().catch((error) => {
+  console.error(error);
+});
 ```
 
-**NOTES:**
-- The router will look for the `#` in the url to handle the navigation. For example, if the url is `http://localhost:8080/#/about`, the router will navigate to the `/about` path.
-- The router will inject the `props` object into the component function as an argument and it will contain, besides the properties that you pass, the following properties:
-  - `queryString`: A string with the query parameters. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `queryString` will be `?name=Paradox`.
-  - `params`: An object with the path parameters. For example, if the url is `http://localhost:8080/about/Paradox`, and the path is `/about/:name`, the `params` object will be `{ name: "Paradox" }`.
-  - `query`: An object with the query parameters. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `query` object will be `{ name: "Paradox" }`.
-  - `baseUrl`: A string with the base url. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `baseUrl` will be `http://localhost:8080`.
+You can also navigate in code:
+
+```javascript
+router.navigate("/about?name=Paradox");
+```
+
+Route handlers receive the props you pass plus a few router-specific values:
+
+- `queryString`: The current query string, like `?name=Paradox`
+- `query`: A `URLSearchParams` instance for the current URL
+- `params`: A `Map` of dynamic route params, like `id` from `/users/:id`
+- `baseUrl`: The router base URL
+- `path`: The matched path
+- `route`: The matched route definition
+- `router`: The active router instance
+
+If a route component or layout returns a function, Paradox will call it before the next route renders. That gives you a tiny cleanup hook for removing listeners, unsubscribing, or tearing down page-specific work.
+
+**Scope notes:**
+- This router is meant for simple browser navigation, not nested routing, data loaders, transitions, or SSR concerns.
+- After `init()`, same-origin links inside the app are intercepted automatically and routed through the History API.
+- If the current URL uses a `#/path` hash, Paradox will still resolve it on load for backward compatibility, but regular path-based URLs are the preferred mode for this iteration.
 
 ### PubSub with `Paradox.pubsub`
 
