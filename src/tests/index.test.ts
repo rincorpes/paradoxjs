@@ -1,6 +1,7 @@
 import Paradox from "../index";
 
 const { buildElement, Router, pubsub } = Paradox;
+const { delegate } = Paradox;
 import { ParadoxElementOptions } from "../core/buildElement/types";
 
 describe('Paradox', () => {
@@ -138,6 +139,134 @@ describe('Paradox', () => {
     expect(Paradox.hasOwnProperty("Router")).toBe(true);
   });
 
+  it("should have delegate property", () => {
+    expect(Paradox.hasOwnProperty("delegate")).toBe(true);
+  });
+
+  describe("delegate", () => {
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
+
+    it("should be a function", () => {
+      expect(typeof delegate).toBe("function");
+    });
+
+    it("should trigger a delegated handler for a matching selector", () => {
+      document.body.innerHTML = `
+        <button data-role="refresh-dashboard">
+          <span>Refresh preview</span>
+        </button>
+      `;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("span")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should pass the matched element to the delegated handler", () => {
+      document.body.innerHTML = `
+        <button data-role="refresh-dashboard">
+          <span>Refresh preview</span>
+        </button>
+      `;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("span")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler.mock.calls[0][1]).toBe(
+        document.querySelector('[data-role="refresh-dashboard"]'),
+      );
+      cleanup();
+    });
+
+    it("should support multiple delegated handlers for the same selector", () => {
+      document.body.innerHTML = `<button data-role="refresh-dashboard">Refresh</button>`;
+
+      const firstHandler = jest.fn();
+      const secondHandler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': [firstHandler, secondHandler],
+        },
+      });
+
+      document.querySelector("button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(firstHandler).toHaveBeenCalledTimes(1);
+      expect(secondHandler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should respect the provided root element scope", () => {
+      document.body.innerHTML = `
+        <section id="inside">
+          <button data-role="refresh-dashboard">Inside</button>
+        </section>
+        <section id="outside">
+          <button data-role="refresh-dashboard">Outside</button>
+        </section>
+      `;
+
+      const handler = jest.fn();
+      const root = document.querySelector("#inside") as HTMLElement;
+      const cleanup = delegate(root, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("#outside button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+      document.querySelector("#inside button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should return a cleanup function that removes the listeners", () => {
+      document.body.innerHTML = `<button data-role="refresh-dashboard">Refresh</button>`;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      cleanup();
+
+      document.querySelector("button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Router', () => {
     it("should be a function", () => {
       expect(typeof Router).toBe("function");
@@ -150,7 +279,12 @@ describe('Paradox', () => {
     const routes = [
       { path: "/", component: Home },
     ];
-    const router = new Router({ routes, baseUrl: "http://localhost" });
+    let router: InstanceType<typeof Router>;
+
+    beforeEach(() => {
+      document.body.innerHTML = "";
+      router = new Router({ routes, baseUrl: "http://localhost" });
+    });
 
     describe("Objcet properties", () => {
 
@@ -184,7 +318,9 @@ describe('Paradox', () => {
     });
 
     describe("init", () => {
-      router.init();
+      beforeEach(() => {
+        router.init();
+      });
       
       it("should set the path", () => {
         expect(router.path).toBe("/");
@@ -218,15 +354,19 @@ describe('Paradox', () => {
       });
 
       describe("/user/:id route", () => {
+        let userRouter: InstanceType<typeof Router>;
         const routes = [
           { path: "/", component: Home },
           { path: "/user/:id", component: Home },
         ];
-        const router = new Router({ routes, baseUrl: "http://localhost" });
-        router.init();
+
+        beforeEach(() => {
+          userRouter = new Router({ routes, baseUrl: "http://localhost" });
+          userRouter.init();
+        });
 
         it("should set pathSegments", () => {
-          expect(router.routes[1].pathSegments).toEqual(["", "user", ":id"]);
+          expect(userRouter.routes[1].pathSegments).toEqual(["", "user", ":id"]);
         });
       });
     });

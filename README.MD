@@ -41,6 +41,7 @@
 - [API Stability](#api-stability)
 - [Documentation](#documentation)
   - [Build an element with `Paradox.buildElement`](#build-an-element-with-paradoxbuildelement)
+  - [Enhance existing HTML with `Paradox.delegate`](#enhance-existing-html-with-paradoxdelegate)
   - [Routes with `Paradox.Router`](#routes-with-paradoxrouter)
   - [PubSub with `Paradox.pubsub`](#pubsub-with-paradoxpubsub)
   - [Examples](#examples)
@@ -67,6 +68,7 @@ Contributions are welcome. Please [start a discussion](https://github.com/Projec
 Paradox is a small vanilla JavaScript utility library that currently provides:
 
 - DOM creation helpers
+- DOM enhancement helpers for existing markup
 - A simple router
 - A lightweight pub/sub implementation
 - An experimental reactive runtime that may change significantly
@@ -172,6 +174,7 @@ Paradox currently uses three API stability tiers.
 These are the supported public APIs for this iteration:
 
 - `Paradox.buildElement`
+- `Paradox.delegate`
 - `Paradox.Router`
 - `Paradox.pubsub`
 - The default `Paradox` export from `penrose-paradox`
@@ -278,6 +281,38 @@ document.body.appendChild(card);
 - Children can be plain text, DOM nodes, nested arrays, or legacy `{ tag, options }` descriptors.
 - Event entries can be a single handler or an array of handlers.
 - `data` and `aria` keys are translated into `data-*` and `aria-*` attributes automatically.
+
+### Enhance existing HTML with `Paradox.delegate`
+
+`Paradox.delegate` helps you attach behavior to existing markup without re-rendering it. This is useful when your HTML already exists and you just want a clean way to wire interactions.
+
+```javascript
+import Paradox from "penrose-paradox";
+
+Paradox.delegate(document, {
+  click: {
+    '[data-role="refresh-dashboard"]': async (_event, button) => {
+      const originalLabel = button.textContent?.trim() || "Refresh preview";
+
+      button.setAttribute("disabled", "");
+      button.textContent = "Refreshing...";
+
+      try {
+        await refreshDashboard();
+      } finally {
+        button.removeAttribute("disabled");
+        button.textContent = originalLabel;
+      }
+    },
+  },
+});
+```
+
+**NOTES:**
+- `delegate` works well with static HTML and `data-*` selectors.
+- Handlers receive both the native event and the matched element.
+- You can register multiple handlers for the same selector by passing an array.
+- The function returns a cleanup callback that removes the delegated listeners.
 
 ### Routes with `Paradox.Router`
 

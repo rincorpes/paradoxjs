@@ -5,6 +5,7 @@ These examples show Paradox as a vanilla JavaScript utility library.
 The goal is not to introduce a new application architecture. The goal is to show a few practical browser-side utilities you can adopt incrementally:
 
 - `Paradox.buildElement` for DOM creation
+- `Paradox.delegate` for enhancing existing HTML
 - `Paradox.Router` for simple route matching
 - `Paradox.pubsub` for lightweight event distribution
 
@@ -14,6 +15,7 @@ The goal is not to introduce a new application architecture. The goal is to show
 - [Router Example](#router-example)
 - [PubSub Example](#pubsub-example)
 - [buildElement Example](#buildelement-example)
+- [delegate Example](#delegate-example)
 - [Example App](#example-app)
 
 ## Overview
@@ -23,6 +25,7 @@ Paradox is most useful when you want a little more structure than raw DOM APIs, 
 You can use each utility on its own:
 
 - Use `buildElement` to reduce repetitive `document.createElement` code
+- Use `delegate` to attach behavior to existing DOM without rebinding individual nodes by hand
 - Use `Router` for small multi-page or route-aware browser experiences
 - Use `pubsub` when different parts of a page need to communicate without tight coupling
 
@@ -160,6 +163,39 @@ Use it when you want a small abstraction over:
 - event binding
 - nested DOM creation
 
+## delegate Example
+
+`Paradox.delegate` is useful when the HTML already exists and you want to enhance it with lightweight behavior.
+
+```js
+import Paradox from "penrose-paradox";
+
+Paradox.delegate(document, {
+  click: {
+    '[data-role="refresh-dashboard"]': async (_event, button) => {
+      const originalLabel = button.textContent?.trim() || "Refresh preview";
+
+      button.setAttribute("disabled", "");
+      button.textContent = "Refreshing...";
+
+      try {
+        await refreshDashboard();
+      } finally {
+        button.removeAttribute("disabled");
+        button.textContent = originalLabel;
+      }
+    },
+  },
+});
+```
+
+Use it when you want:
+
+- Behavior tied to existing HTML
+- `data-role` or class-based enhancement
+- One delegated listener instead of many direct bindings
+- A cleanup function for teardown
+
 ## Example App
 
 The `examples/paradox-app` folder contains a small demo app that uses the current utilities together.
@@ -168,6 +204,7 @@ It is intentionally simple and currently showcases:
 
 - Route-based page rendering with `Paradox.Router`
 - DOM creation with `Paradox.buildElement`
+- Existing-markup enhancement with `Paradox.delegate`
 - Cross-page messaging with `Paradox.pubsub`
 
 ### Run The Example
@@ -184,6 +221,7 @@ Then open `http://localhost:3040`.
 
 - The home and about pages are rendered with `Router`
 - Buttons and page structure are created with `buildElement`
+- Existing UI controls can be enhanced with `delegate`
 - Messages are sent through `pubsub`
 
 This example should be understood as a utility showcase, not as the recommended architecture for every app.
