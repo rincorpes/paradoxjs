@@ -6,17 +6,14 @@ import { MessageContainerProps } from "../types";
 export default function MessageContainer(props: MessageContainerProps = {}) {
   const { callback = null } = props;
   let count = 0;
-  const subscribe = Paradox.pubsub.subscribe("button-clicked", callback ? callback : (message) => {
+  Paradox.pubsub.subscribe("button-clicked", callback ? callback : (message) => {
     const messageContainer: HTMLElement | null = document.getElementById("messageContainer");
     if (!messageContainer) return;
     messageContainer.innerHTML = `${message} ${count}`;
     count++;
   });
 
-  return {
-    tag: "div",
-    options: {
-      id: "messageContainer",
-    }
-  }
+  return Paradox.buildElement("div", {
+    id: "messageContainer",
+  });
 }

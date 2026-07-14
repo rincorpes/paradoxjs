@@ -48,11 +48,11 @@ These ideas are not forbidden forever, but they are not the right center of grav
 
 ## 2. DOM Utilities
 
-- [ ] Refine `buildElement` into a dependable DOM helper instead of a pseudo-component system
-- [ ] Support modern attribute ergonomics consistently
-- [ ] Support multiple event handlers predictably
-- [ ] Improve typing for element options and child nodes
-- [ ] Add tests for real-world DOM creation cases
+- [x] Refine `buildElement` into a dependable DOM helper instead of a pseudo-component system
+- [x] Support modern attribute ergonomics consistently
+- [x] Support multiple event handlers predictably
+- [x] Improve typing for element options and child nodes
+- [x] Add tests for real-world DOM creation cases
 
 ## 3. Router
 

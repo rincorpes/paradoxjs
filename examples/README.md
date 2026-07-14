@@ -113,41 +113,39 @@ This is useful when:
 
 ## buildElement Example
 
-`Paradox.buildElement` helps create DOM nodes from a plain object shape.
+`Paradox.buildElement` helps create DOM nodes without forcing you into a component runtime.
 
 ```js
 import Paradox from "penrose-paradox";
 
-function handleClick() {
-  console.log("clicked");
-}
-
-const element = Paradox.buildElement("div", {
+const element = Paradox.buildElement("section", {
   id: "message-box",
-  classList: "card shadow-sm",
-  attributes: {
-    "data-role": "message-box",
+  className: ["card", "shadow-sm"],
+  data: {
+    role: "message-box",
+  },
+  aria: {
+    live: "polite",
   },
   style: {
     padding: "1rem",
     border: "1px solid #ddd",
+    "--message-accent": "#0ea5e9",
   },
   children: [
-    {
-      tag: "h2",
-      options: {
-        text: "Hello",
+    Paradox.buildElement("h2", {
+      text: "Hello",
+    }),
+    "This node was built with a DOM helper, not a template runtime.",
+    Paradox.buildElement("button", {
+      text: "Click me",
+      events: {
+        click: [
+          () => console.log("clicked"),
+          () => console.log("tracked"),
+        ],
       },
-    },
-    {
-      tag: "button",
-      options: {
-        text: "Click me",
-        events: {
-          click: handleClick,
-        },
-      },
-    },
+    }),
   ],
 });
 
@@ -158,6 +156,7 @@ Use it when you want a small abstraction over:
 
 - `document.createElement`
 - attribute assignment
+- data and aria attribute wiring
 - event binding
 - nested DOM creation
 

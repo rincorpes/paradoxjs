@@ -237,58 +237,68 @@ Paradox currently includes the following public utilities:
 
 ### Build an element with `Paradox.buildElement`
 
-Paradox provides a simple way to build an element with the `buildElement` function that takes the element name and an object with the element properties as arguments.
+Paradox provides a small DOM helper with the `buildElement` function. It is meant to reduce repetitive DOM setup work while staying close to browser primitives.
 
 **Properties:**
 
 | Property | Type | Description |
 | --- | --- | --- |
 | id | string | The element id |
-| classList | string | The element class list separated by spaces |
-| attributes | object | The element attributes (e.g. type, value, etc.) |
-| events | object | The element events (e.g. click, change, etc.) |
-| style | object | The element style (e.g. backgroundColor, color, etc.) |
-| text | string | The element text |
-| children | array | The element children |
+| className | string \| string[] | Class name(s) for the element |
+| classList | string \| string[] | Additional class name(s) for the element |
+| attributes | object | Standard HTML attributes |
+| data | object | `data-*` attributes using camelCase or snake_case keys |
+| aria | object | `aria-*` attributes using camelCase or snake_case keys |
+| events | object | Event listeners, including arrays of handlers |
+| style | object | Inline styles using camelCase keys or CSS custom properties |
+| text | string \| number | Text appended before child nodes |
+| children | array | Strings, numbers, existing nodes, descriptors, or nested arrays |
 
 ```javascript
 import Paradox from "penrose-paradox";
 
-function handleButtonClick() {
-  alert("Hello World!");
-}
-
-const myButton = {
-  id: "myButton",
-  classList: "btn btn-primary",
+const button = Paradox.buildElement("button", {
+  className: ["btn", "btn-primary"],
   attributes: {
     type: "button",
   },
+  data: {
+    trackingId: "cta-1",
+  },
+  aria: {
+    label: "Open details",
+  },
   events: {
-    click: handleButtonClick,
+    click: [
+      () => console.log("primary click"),
+      () => console.log("analytics event"),
+    ],
   },
-  style: {
-    backgroundColor: "red",
-  },
-  text: "Click me!",
-  children: [
-    {
-      tag: "i",
-      options: {
-        id: "myButtonIcon",
-        classList: "fas fa-hand-pointer",
-      }
-    },
-  ],
-}
+  text: "Open details",
+});
 
-document.body.appendChild(Paradox.buildElement("button", myButton));
+const card = Paradox.buildElement("section", {
+  id: "hero-card",
+  classList: "card shadow-sm",
+  style: {
+    padding: "1rem",
+    "--accent-color": "#ef4444",
+  },
+  children: [
+    Paradox.buildElement("h2", { text: "Paradox" }),
+    "The batteries I wish vanilla JavaScript came with.",
+    button,
+  ],
+});
+
+document.body.appendChild(card);
 ```
 
 **NOTES:**
-- The `buildElement` function will return a `HTMLElement` object.
-- The `children` property is an array of objects with the `tag` and `options` properties. The `tag` property is the element name and the `options` property is the object with the element properties.
-- The `options` property is optional, so you can pass just the `tag` property and it will return an element with no properties.
+- The `buildElement` function returns an actual DOM element.
+- Children can be plain text, DOM nodes, nested arrays, or legacy `{ tag, options }` descriptors.
+- Event entries can be a single handler or an array of handlers.
+- `data` and `aria` keys are translated into `data-*` and `aria-*` attributes automatically.
 
 ### Routes with `Paradox.Router`
 
@@ -333,7 +343,7 @@ const routes = [
   },
 ];
 
-const router = new Paradox.Router(routes);
+const router = new Paradox.Router({ routes });
 router.init()
   .then((path) => {
     console.info(`The current path is: ${path}`);

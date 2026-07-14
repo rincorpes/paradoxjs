@@ -1,27 +1,68 @@
-/**
- * Appends an array of child elements to a parent element.
- * 
- * @param element - The parent element to append the children to.
- * @param children - An array of child elements to append.
- * @param buildElement - A function that builds an element based on a tag and options.
- */
-function appendChildren(element: HTMLElement, children: Array<any>, buildElement: Function): void {
-  // Create a Document Fragment to efficiently append children
-  const fragment = document.createDocumentFragment() as DocumentFragment;
+import getText from "./getText";
 
-  // Append each child to the fragment
-  if (children) {
-    for (const child of children) {
-      // Skip if child is not valid
-      if (!child) continue;
-      // Recursively build and append child element
-      const { tag, options } = child;
-      fragment.append(buildElement(tag, options));
-    }
+import { ParadoxElementChild, ParadoxElementChildren, ParadoxElementDescriptor, ParadoxElementOptions } from "../types";
 
-    // Append all children at once to the parent element
-    element.append(fragment);
+type BuildElementFunction = <Tag extends keyof HTMLElementTagNameMap>(
+  tag: Tag,
+  options?: ParadoxElementOptions<Tag>
+) => HTMLElementTagNameMap[Tag];
+
+function isNode(value: unknown): value is Node {
+  return typeof Node !== "undefined" && value instanceof Node;
+}
+
+function isElementDescriptor(value: unknown): value is ParadoxElementDescriptor {
+  return Boolean(value)
+    && typeof value === "object"
+    && !Array.isArray(value)
+    && "tag" in (value as ParadoxElementDescriptor)
+    && typeof (value as ParadoxElementDescriptor).tag === "string";
+}
+
+function appendChild(
+  fragment: DocumentFragment,
+  child: ParadoxElementChild,
+  buildElement: BuildElementFunction
+): void {
+  if (child === null || child === undefined || typeof child === "boolean") {
+    return;
   }
+
+  if (Array.isArray(child)) {
+    for (const nestedChild of child) {
+      appendChild(fragment, nestedChild, buildElement);
+    }
+    return;
+  }
+
+  if (isNode(child)) {
+    fragment.append(child);
+    return;
+  }
+
+  if (isElementDescriptor(child)) {
+    fragment.append(buildElement(child.tag, child.options));
+    return;
+  }
+
+  fragment.append(document.createTextNode(getText(String(child))));
+}
+
+/**
+ * Appends supported child values to a parent element.
+ */
+function appendChildren(
+  element: HTMLElement,
+  children: ParadoxElementChildren = [],
+  buildElement: BuildElementFunction
+): void {
+  const fragment = document.createDocumentFragment();
+
+  for (const child of children) {
+    appendChild(fragment, child, buildElement);
+  }
+
+  element.append(fragment);
 }
 
 export default appendChildren;

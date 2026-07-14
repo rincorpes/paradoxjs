@@ -10,6 +10,7 @@ import MessageContainer from "../components/MessageContainer";
 // This component will be rendered when the user navigates to the / route.
 export default function Home(props: ExamplePageProps = {}) {
   const { root } = props;
+  if (!root) return;
 
   let count = 0;
   function handlePubsubSubscription(message: string) {
@@ -24,41 +25,29 @@ export default function Home(props: ExamplePageProps = {}) {
   }
 
   root.append(
-    Paradox.buildElement(
-      "div",
-      {
-        classList: "container",
-        children: [
-          {
-            tag: "h1",
-            options: {
-              text: "Home"
-            }
-          },
-          {
-            tag: "a",
-            options: {
-              text: "Go to about",
-              attributes: {
-                href: "/about"
-              }
-            }
-          },
-          Divider(),
-          {
-            tag: "div",
-            options: {
-              classList: "d-flex align-items-center",
-              children: [
-                Button({ message: "Home button clicked" }),
-                Button({ message: "Remove pubsub subscription clicked", text: "Remove pubsub subscription", onClick: handleRemovePubsubSubscription }),
-                Button({ message: "Add pubsub subscription clicked again", text: "Add pubsub subscription", onClick: () => Paradox.pubsub.subscribe("button-clicked", handlePubsubSubscription) }),
-              ]
-            }
-          },
-          MessageContainer({ callback: handlePubsubSubscription }),
-        ]
-      }
-    )
+    Paradox.buildElement("div", {
+      classList: "container",
+      children: [
+        Paradox.buildElement("h1", {
+          text: "Home"
+        }),
+        Paradox.buildElement("a", {
+          text: "Go to about",
+          attributes: {
+            href: "/about"
+          }
+        }),
+        Divider(),
+        Paradox.buildElement("div", {
+          classList: "d-flex align-items-center",
+          children: [
+            Button({ message: "Home button clicked" }),
+            Button({ message: "Remove pubsub subscription clicked", text: "Remove pubsub subscription", onClick: handleRemovePubsubSubscription }),
+            Button({ message: "Add pubsub subscription clicked again", text: "Add pubsub subscription", onClick: () => Paradox.pubsub.subscribe("button-clicked", handlePubsubSubscription) }),
+          ]
+        }),
+        MessageContainer({ callback: handlePubsubSubscription }),
+      ]
+    })
   );
 }

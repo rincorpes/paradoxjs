@@ -44,10 +44,10 @@ class PubSub {
   /**
    * Publish an event.
    * @param {string} event - The event name to publish.
-   * @param {object} [data={}] - The data to be passed to the event subscribers.
+   * @param {*} [data={}] - The data to be passed to the event subscribers.
    * @returns {array} - An array of return values from the event subscribers.
    */
-  publish(event: string, data: object = {}): Array<any> {
+  publish(event: string, data: any = {}): Array<any> {
     let self = this;
     let results: (void | null)[][] = [];
     if (self.events.hasOwnProperty(event)) {

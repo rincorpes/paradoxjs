@@ -1,7 +1,7 @@
 import Paradox from "../index";
 
 const { buildElement, Router, pubsub } = Paradox;
-import { ParadoxElementOptions, ParadoxElementChildren } from "../core/buildElement/types";
+import { ParadoxElementOptions } from "../core/buildElement/types";
 
 describe('Paradox', () => {
   it("should be an object", () => {
@@ -18,91 +18,118 @@ describe('Paradox', () => {
     });
 
     it ("should return an HTMLElement", () => {
-      let element = buildElement("div");
+      const element = buildElement("div");
       expect(element instanceof HTMLElement).toBe(true);
     });
 
-    describe('options', () => {
-      const options = {
-        id: "test",
-        classList: "test test2",
-        attributes: { "data-test": "test" },
-        text: "test",
-        style: { color: "red" },
-        children: Array<object>(),
-        events: {}
-      };
-
-      let element = buildElement("div", options as ParadoxElementOptions);
-
-      it("should set the ID if provided", () => {
-        expect(element.id).toBe(options.id);
-      });
-
-      it("should add classes if provided", () => {
-        const classList = options.classList.split(" ");
-        for (let className of classList) {
-          expect(element.classList.contains(className)).toBe(true);
-        }
-      });
-
-      it("should set attributes if provided", () => {
-        for (let [key, value] of Object.entries(options.attributes)) {
-          expect(element.getAttribute(key)).toBe(value);
-        }
-      });
-
-      it("should set text content if provided", () => {
-        expect(element.textContent).toBe(options.text);
-      });
-
-      it("should set inline styles if provided", () => {
-        for (let [key, value] of Object.entries(options.style)) {
-          expect((element.style as any)[key]).toBe(value);
-        }
-      });
-
-      describe("children", () => {
-        const children = [
-          { tag: "span" },
-          { tag: "span" },
-          {
-            tag: "span", options: {
-              children: [
-                { tag: "span" },
-                { tag: "span" }
-              ]
-            }
-          }
-        ];
-        options.children = children;
-
-        element = buildElement("div", options as ParadoxElementOptions);
-
-        it("should append children if provided", () => {
-          expect(element.children.length).toBe(children.length);
-        });
-
-        it("should append nested children if provided", () => {
-          if (element.children[2] && children[2].options) {
-            expect(element.children[2].children.length).toBe(children[2].options.children.length);
-          }
-        });
-      });
-
-      describe("events", () => {
-        const events = {
-          click: (ev: { target: any }) => {
-            return ev.target;
+    describe("options", () => {
+      it("should apply id, classes, text, attributes, data, aria, and style", () => {
+        const element = buildElement("section", {
+          id: "test",
+          className: ["card", "rounded"],
+          classList: "shadow-sm",
+          text: "hello",
+          attributes: {
+            title: "Paradox",
+            hidden: false,
+            draggable: true,
           },
-        };
-        options.events = events;
+          data: {
+            userId: 42,
+          },
+          aria: {
+            label: "Greeting card",
+          },
+          style: {
+            color: "red",
+            zIndex: 3,
+            "--card-tone": "warm",
+          },
+        } as ParadoxElementOptions);
 
-        element = buildElement("div", options as ParadoxElementOptions);
+        expect(element.id).toBe("test");
+        expect(element.className).toBe("card rounded shadow-sm");
+        expect(element.textContent).toBe("hello");
+        expect(element.getAttribute("title")).toBe("Paradox");
+        expect(element.hasAttribute("hidden")).toBe(false);
+        expect(element.getAttribute("draggable")).toBe("");
+        expect(element.getAttribute("data-user-id")).toBe("42");
+        expect(element.getAttribute("aria-label")).toBe("Greeting card");
+        expect(element.style.color).toBe("red");
+        expect(element.style.zIndex).toBe("3");
+        expect(element.style.getPropertyValue("--card-tone")).toBe("warm");
+      });
 
-        it("should add event listeners if provided", () => {
-          expect(element.onclick).toBeDefined();
+      it("should append text, descriptors, nodes, nested arrays, and numbers as children", () => {
+        const existingNode = document.createElement("strong");
+        existingNode.textContent = "existing";
+
+        const element = buildElement("div", {
+          text: "prefix",
+          children: [
+            " message ",
+            7,
+            false,
+            null,
+            undefined,
+            existingNode,
+            {
+              tag: "span",
+              options: {
+                text: "child",
+              },
+            },
+            [
+              {
+                tag: "em",
+                options: {
+                  text: "nested",
+                },
+              },
+            ],
+          ],
         });
+
+        expect(element.textContent).toBe("prefix message 7existingchildnested");
+        expect(element.querySelector("strong")?.textContent).toBe("existing");
+        expect(element.querySelector("span")?.textContent).toBe("child");
+        expect(element.querySelector("em")?.textContent).toBe("nested");
+      });
+
+      it("should support multiple event handlers predictably", () => {
+        const firstHandler = jest.fn();
+        const secondHandler = jest.fn();
+
+        const button = buildElement("button", {
+          events: {
+            click: [firstHandler, secondHandler],
+          },
+        });
+
+        button.click();
+
+        expect(firstHandler).toHaveBeenCalledTimes(1);
+        expect(secondHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it("should preserve legacy descriptor children for compatibility", () => {
+        const element = buildElement("div", {
+          children: [
+            { tag: "span" },
+            {
+              tag: "span",
+              options: {
+                children: [
+                  { tag: "span", options: { text: "nested child" } },
+                ],
+              },
+            },
+          ],
+        });
+
+        expect(element.children.length).toBe(2);
+        expect(element.children[1]?.children.length).toBe(1);
+        expect(element.children[1]?.children[0]?.textContent).toBe("nested child");
       });
     });
   });
