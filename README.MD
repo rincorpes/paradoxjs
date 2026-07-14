@@ -1,12 +1,12 @@
 
 <p align="center">
 
-  <h1 align="center">&lt;Paradox/&gt; Not another javascript framework!</h1>
+  <h1 align="center">&lt;Paradox/&gt;</h1>
 
   <p align="center">
-    Paradox is just a simple vanilla javascript library for DOM manipulation.
+    The batteries I wish vanilla JavaScript came with.
     <br>
-    Hopefully it will ease your development while learning
+    A small utility belt for DOM work, routing, and browser-side glue code.
     <br>
     ·
     <a href="https://github.com/ProjectPenrose/paradox/labels/bug">Report Bugs</a>
@@ -51,15 +51,24 @@
 
 ## About The Project
 
-Working on cool stuff to say here. stay tuned and please be patient, this is a work in progress.
+Paradox is a vanilla JavaScript utility library for people who want a little more help from the browser without committing to a full framework.
 
-Contributions are welcome thogh xd, please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) to discuss what you would like to change, add or remove and we can figure it out together.
+The goal is simple: make repetitive client-side work easier while staying close to platform APIs. Think DOM creation helpers, a lightweight router, pub/sub utilities, and a few carefully chosen browser-side batteries.
+
+Paradox is not trying to replace React, Vue, Angular, or the DOM itself. If a feature pushes the project toward "framework" territory, it should earn its place very carefully.
+
+Contributions are welcome. Please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
 
 **Link to the** <a href="https://www.npmjs.com/package/penrose-paradox">npm package</a>
 
 ## Getting Started
 
-Paradox is a simple vanilla javascript library for DOM manipulation that also provides a simple router and PubSub implementation.
+Paradox is a small vanilla JavaScript utility library that currently provides:
+
+- DOM creation helpers
+- A simple router
+- A lightweight pub/sub implementation
+- An experimental reactive runtime that may change significantly
 
 ### Requirements
 
@@ -79,7 +88,7 @@ Paradox is a simple vanilla javascript library for DOM manipulation that also pr
 
 ## Usage
 
-Now things can change depending on what you want to do, so here are some options:
+Paradox is meant to be adopted incrementally. Use the parts that help, ignore the rest.
 
 ### Paradox from npm
 
@@ -95,7 +104,7 @@ Then you can import it like this:
 import Paradox from "penrose-paradox";
 ```
 
-Now you'll have access to all the paradox features in your node projects.
+Now you'll have access to Paradox in your project.
 
 #### Project structure example
 
@@ -172,7 +181,7 @@ If you want to use it as a module in a simple HTML project, you should import it
 
 ## Documentation
 
-Paradox includes the following features:
+Paradox currently includes the following public utilities:
 
 ### Build an element with `Paradox.buildElement`
 
@@ -248,7 +257,7 @@ function About(props) {
   const { name, root } = props;
   root.append(Paradox.buildElement("div", {
     id: "about",
-    text: `Paradox is a simple vanilla javascript library for DOM manipulation. This is the ${name} page.`,
+    text: `Paradox is a vanilla JavaScript utility library. This is the ${name} page.`,
   }));
 }
 
@@ -292,13 +301,13 @@ router.init()
 
 ### PubSub with `Paradox.pubsub`
 
-Paradox provides a simple PubSub implementation to handle the communication between components.
+Paradox provides a simple PubSub implementation to handle communication between independent parts of a page or app.
 
 In case you're not familiar, PubSub is a popular messaging pattern in software architecture. It stands for Publish-Subscribe pattern and is used for communication between different parts of an application or between different applications.
 
 In the PubSub pattern, publishers send messages without knowing who the subscribers are. Subscribers, on the other hand, express interest in one or more events and only receive messages that are of interest, without knowing who sent them.
 
-This pattern is widely used in event-driven programming and can help to decouple the components of an application, leading to code that is easier to maintain and extend. In the context of Paradox, it allows components to communicate with each other in a decoupled manner.
+This pattern is widely used in event-driven programming and can help decouple different parts of an application, leading to code that is easier to maintain and extend.
 
 ```javascript
 import Paradox from "penrose-paradox";
@@ -311,7 +320,7 @@ Paradox.pubsub.publish("myEvent", "Hello World!");
 ```
 
 **NOTES:**
-- You can use pubsub to communicate between components, for example, you can publish an event in a component and subscribe to it in another component. This way you can pass data between components without having to use props.
+- You can use pubsub to communicate between separate modules, widgets, or route handlers without wiring them directly together.
 - Subscriptions are not persistent, so if you subscribe to an event and then navigate to another page, the subscription will be lost.
 - You can use the `Paradox.pubsub.unsubscribe` method to unsubscribe from an event.
 - You can not publish an event before subscribing to it xd.

@@ -1,53 +1,100 @@
 # Roadmap
 
-This is a list of features that are planned to be implemented in the future.
+Paradox is being repositioned around a simpler idea:
 
-## Before 1.0.0
+> The batteries I wish vanilla JavaScript came with.
 
-The following features are planned to be implemented before the first stable release. The order of the features is not necessarily the order in which they will be implemented.
+That means this iteration is not about building a framework, a component runtime, or a full application architecture. It is about providing a focused set of utilities that remove repetitive browser work while staying close to the platform.
 
-### Community, testing, documentation and examples
+## Where We Are
 
-The following features are not directly related to the library itself, but are still important to have before the first stable release.
+Paradox already has a few useful primitives:
 
-- [ ] Improve documentation
-- [ ] Add more examples
-- [x] Add more tests
-- [ ] Finish community guidelines
-- [ ] Automate release process
-- [ ] Automate changelog generation
-- [x] Add badges to README
+- `buildElement` for DOM creation
+- `Router` for simple route matching
+- `pubsub` for lightweight event distribution
+- `buildApp` as an early experiment in reactive rendering
 
-### Features
+The main gap is not a lack of features. The gap is product direction and polish. Right now the project mixes "utility library" ideas with "mini framework" ideas, and that makes the roadmap harder than it needs to be.
 
-The following features are planned to be implemented before the first stable release.
+## What We Are Leaving Behind
 
-#### General
+The previous roadmap had a few items that do not fit the current direction, or should be rethought before more work happens:
 
-- [x] Add typescript watch mode to `npm run dev`
-- [ ] Add state management support
-- [X] Add `Paradox.buildApp`. This will allow users to create reactive components.
-- [ ] Add `Paradox.buildApp` tests
-- [ ] Add submodules to `Paradox` namespace
+- Drop "state management support" as a roadmap goal for this iteration
+- Drop "reactive components" as a positioning goal
+- Drop "add submodules to the Paradox namespace" as a goal by itself
+- Treat `buildApp` as experimental until its purpose is redefined
+- Replace vague roadmap items with outcome-based work
 
-#### buildElement
+These ideas are not forbidden forever, but they are not the right center of gravity if Paradox is meant to stay vanilla-first and lightweight.
 
-- [ ] Change the`buildElement` algorithm to ease the creation of HTML elements by adding multiple events support and other features.
+## Principles For This Iteration
 
-#### Router
+- Stay close to platform APIs
+- Prefer small composable utilities over app-wide abstractions
+- Make common DOM tasks easier without hiding how the browser works
+- Be safe to adopt incrementally in existing projects
+- Keep the public API small and well documented
 
-- [ ] Add support for SPA routing
+## Current Iteration Goals
 
-#### pubsub
+## 1. Core Identity And Packaging
 
-- [ ] Add `once` method so that a subscriber can be removed after it has been called once
-- [ ] Add `clear` method to remove all subscribers
+- [x] Update README, package metadata, and examples to describe Paradox as a vanilla JavaScript utility library
+- [ ] Define which APIs are stable, experimental, or internal
+- [ ] Publish a modern package shape for current tooling
+- [ ] Remove or hide deep-import expectations from the docs
 
-#### utils
+## 2. DOM Utilities
 
-- [ ] Add `debounce` method
-- [ ] Add `throttle` method
+- [ ] Refine `buildElement` into a dependable DOM helper instead of a pseudo-component system
+- [ ] Support modern attribute ergonomics consistently
+- [ ] Support multiple event handlers predictably
+- [ ] Improve typing for element options and child nodes
+- [ ] Add tests for real-world DOM creation cases
 
-#### Docs
+## 3. Router
 
-- [ ] Turn examples into docs
+- [ ] Make `Router` explicitly useful for simple SPA navigation
+- [ ] Fix route re-entry, param reset, and navigation lifecycle issues
+- [ ] Add support for link interception and `popstate`
+- [ ] Document the intended scope of the router so it stays intentionally small
+
+## 4. PubSub And Small Utilities
+
+- [ ] Add `once` to `pubsub`
+- [ ] Add `clear` to `pubsub`
+- [ ] Tighten typing and behavior around wildcard subscriptions
+- [ ] Add a small `utils` module only for truly general-purpose helpers
+- [ ] Re-evaluate `debounce` and `throttle` once module boundaries are defined
+
+## 5. Documentation And Examples
+
+- [ ] Replace framework-like language in the docs
+- [ ] Add examples that show incremental adoption in plain HTML or simple apps
+- [ ] Turn the example app into a showcase of utilities, not a pseudo-framework demo
+- [ ] Add guidance on when Paradox is a good fit and when it is not
+
+## 6. Testing And Quality
+
+- [ ] Run tests from source instead of compiled output
+- [ ] Add coverage for `buildApp` if it remains public
+- [ ] Add integration tests for router navigation and DOM behavior
+- [ ] Add release and changelog automation only after the public API is clearer
+
+## Experimental Track
+
+`buildApp` does not currently match the new positioning well enough to be a headline feature. For now, the plan is:
+
+- [ ] Decide whether `buildApp` becomes a tiny reactive helper, an internal experiment, or is removed from the main API
+- [ ] Do not expand it with framework features until that decision is made
+
+## Definition Of Success
+
+This iteration will be successful if Paradox becomes:
+
+- Easy to understand in five minutes
+- Useful without requiring architectural buy-in
+- Reliable for DOM, routing, and event utility work
+- Small enough that vanilla JavaScript developers still feel at home

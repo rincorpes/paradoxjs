@@ -1,7 +1,7 @@
 {
   "name": "paradox-app",
   "version": "1.0.0",
-  "description": "",
+  "description": "Example app showcasing Paradox as a vanilla JavaScript utility library",
   "main": "server/index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -12,7 +12,13 @@
     "webpack": "webpack --watch",
     "tsc": "npx tsc --watch"
   },
-  "keywords": [],
+  "keywords": [
+    "paradox",
+    "vanilla-js",
+    "router",
+    "pubsub",
+    "dom"
+  ],
   "author": "",
   "license": "ISC",
   "devDependencies": {

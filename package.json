@@ -1,14 +1,18 @@
 {
   "name": "penrose-paradox",
   "version": "0.4.10",
-  "description": "Simple vanilla JavaScript library for beginners",
+  "description": "The batteries I wish vanilla JavaScript came with",
   "keywords": [
     "penrose",
     "paradox",
     "javascript",
     "DOM manipulation",
+    "vanilla-js",
+    "router",
+    "pubsub",
+    "utilities",
     "library",
-    "beginner"
+    "browser"
   ],
   "author": {
     "name": "Santiago Rincón",
