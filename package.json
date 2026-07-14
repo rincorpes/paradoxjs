@@ -18,10 +18,21 @@
     "name": "Santiago Rincón",
     "email": "rincorpes@gmail.com"
   },
-  "main": "build/index.js",
-  "module": "build/index.js",
-  "types": "build/index.d.ts",
-  "ts-module": "src/index.ts",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "require": "./dist/index.js",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "files": [
+    "dist",
+    "README.MD",
+    "LICENSE"
+  ],
   "license": "ISC",
   "repository": {
     "type": "git",
@@ -53,9 +64,13 @@
     "webpack-cli": "^5.1.4"
   },
   "scripts": {
-    "build": "tsc",
-    "test": "jest build",
-    "dev": "tsc -w"
+    "clean": "node -e \"require('fs').rmSync('dist', { recursive: true, force: true }); require('fs').rmSync('build', { recursive: true, force: true });\"",
+    "clean:test": "node -e \"require('fs').rmSync('build', { recursive: true, force: true });\"",
+    "build": "npm run clean && tsc -p tsconfig.build.json",
+    "build:test": "npm run clean:test && tsc -p tsconfig.test-build.json",
+    "prepack": "npm run build",
+    "test": "npm run build:test && jest --runTestsByPath build/tests/index.test.js",
+    "dev": "tsc -w -p tsconfig.build.json"
   },
   "jest": {
     "testEnvironment": "jsdom"

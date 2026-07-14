@@ -37,7 +37,7 @@
   - [Paradox from npm](#paradox-from-npm)
     - [Project structure example](#project-structure-example)
     - [Webpack config](#webpack-config)
-  - [Paradox as a module in a simple html project](#paradox-as-a-module-in-a-simple-html-project)
+  - [Paradox in plain HTML projects](#paradox-in-plain-html-projects)
 - [API Stability](#api-stability)
 - [Documentation](#documentation)
   - [Build an element with `Paradox.buildElement`](#build-an-element-with-paradoxbuildelement)
@@ -170,15 +170,19 @@ module.exports = {
 }
 ```
 
-### Paradox as a module in a simple HTML project
+### Paradox in plain HTML projects
 
-If you want to use it as a module in a simple HTML project, you should import it in your script like this:
+Paradox is currently packaged for npm-based tooling with a single root entry point and an `exports` map. For package consumers, prefer:
 
-```html
-<script type="module">
-  import Paradox from "./path/to/penrose-paradox/build/index.js";
-</script>
+```javascript
+import Paradox from "penrose-paradox";
 ```
+
+This works well in modern tooling such as bundlers, test runners, and Node-aware build pipelines.
+
+Paradox does not currently ship a browser-native ESM bundle for direct `<script type="module">` usage without a build step. If that becomes an important use case again, it should be added as a separate package target rather than relying on internal output files.
+
+Avoid relying on deep package paths, since they are considered internal and are not part of the supported public package surface.
 
 ## API Stability
 
