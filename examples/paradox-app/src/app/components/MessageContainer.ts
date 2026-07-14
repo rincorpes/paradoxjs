@@ -1,9 +1,9 @@
 import Paradox from "penrose-paradox";
-import { RouterProps } from "penrose-paradox/build/core/Router";
+import { MessageContainerProps } from "../types";
 
 // Define the MessageContainer component.
 // This component will be used to show the message when the button is clicked by subscribing to the "button-clicked" event.
-export default function MessageContainer(props: RouterProps = {}) {
+export default function MessageContainer(props: MessageContainerProps = {}) {
   const { callback = null } = props;
   let count = 0;
   const subscribe = Paradox.pubsub.subscribe("button-clicked", callback ? callback : (message) => {

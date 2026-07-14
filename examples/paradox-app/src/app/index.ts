@@ -3,7 +3,6 @@ import Paradox from "penrose-paradox";
 // Import pages
 import Home from "./pages/Home";
 import About from "./pages/About";
-import Reactive from "./pages/Reactive";
 
 const baseUrl = process.env.BASE_URL || "http://localhost:3040"; // This is the url of the client app and it is used to redirect the user to the appropriate route.
 const root = document.querySelector("#root"); // This is the root element where the app will be rendered.
@@ -22,11 +21,6 @@ const routes = [
     path: "/about",
     component: About,
     props
-  },
-  {
-    path: "/reactive",
-    component: Reactive,
-    
   }
 ];
 

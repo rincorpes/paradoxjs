@@ -42,7 +42,7 @@ These ideas are not forbidden forever, but they are not the right center of grav
 ## 1. Core Identity And Packaging
 
 - [x] Update README, package metadata, and examples to describe Paradox as a vanilla JavaScript utility library
-- [ ] Define which APIs are stable, experimental, or internal
+- [x] Define which APIs are stable, experimental, or internal
 - [ ] Publish a modern package shape for current tooling
 - [ ] Remove or hide deep-import expectations from the docs
 

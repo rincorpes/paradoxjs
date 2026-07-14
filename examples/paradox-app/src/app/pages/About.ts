@@ -1,5 +1,5 @@
 import Paradox from "penrose-paradox";
-import { RouterProps } from "penrose-paradox/build/core/Router";
+import { ExamplePageProps } from "../types";
 
 // Import components
 import Divider from "../components/Divider";
@@ -8,7 +8,7 @@ import MessageContainer from "../components/MessageContainer";
 
 // Define the About component.
 // This component will be rendered when the user navigates to the /about route.
-export default function About(props: RouterProps = {}) {
+export default function About(props: ExamplePageProps = {}) {
   const { root } = props;
   root.append(
     Paradox.buildElement(

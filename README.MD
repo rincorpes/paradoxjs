@@ -38,6 +38,7 @@
     - [Project structure example](#project-structure-example)
     - [Webpack config](#webpack-config)
   - [Paradox as a module in a simple html project](#paradox-as-a-module-in-a-simple-html-project)
+- [API Stability](#api-stability)
 - [Documentation](#documentation)
   - [Build an element with `Paradox.buildElement`](#build-an-element-with-paradoxbuildelement)
   - [Routes with `Paradox.Router`](#routes-with-paradoxrouter)
@@ -178,6 +179,55 @@ If you want to use it as a module in a simple HTML project, you should import it
   import Paradox from "./path/to/penrose-paradox/build/index.js";
 </script>
 ```
+
+## API Stability
+
+Paradox currently uses three API stability tiers.
+
+### Stable
+
+These are the supported public APIs for this iteration:
+
+- `Paradox.buildElement`
+- `Paradox.Router`
+- `Paradox.pubsub`
+- The default `Paradox` export from `penrose-paradox`
+
+These utilities reflect the main direction of the library as a vanilla JavaScript utility belt.
+
+### Experimental
+
+These APIs exist, but may change significantly or be removed while the project is refined:
+
+- `Paradox.buildApp`
+
+`buildApp` is currently an experiment in reactive rendering. It is not yet part of the stable core identity of Paradox.
+
+### Internal
+
+Anything outside the top-level package entry should currently be treated as internal and unsupported for external use. This includes:
+
+- Deep imports such as `penrose-paradox/build/core/...`
+- Source-level imports such as `src/core/...`
+- Helper modules under `core/buildApp/*` and `core/buildElement/*`
+- Internal types that are not exported from the package root
+
+In practice, consumers should avoid imports like:
+
+```js
+import { addState } from "penrose-paradox/build/core/buildApp";
+import { RouterProps } from "penrose-paradox/build/core/Router";
+```
+
+Those paths expose implementation details rather than supported public API.
+
+### TypeScript Note
+
+Paradox does not yet have a finalized stable type export strategy. For now:
+
+- Runtime imports from the package root are supported
+- Deep-imported types should be treated as internal
+- Type exports will be revisited as part of the packaging and API cleanup work
 
 ## Documentation
 
