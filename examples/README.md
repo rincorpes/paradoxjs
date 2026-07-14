@@ -187,3 +187,11 @@ Then open `http://localhost:3040`.
 - Messages are sent through `pubsub`
 
 This example should be understood as a utility showcase, not as the recommended architecture for every app.
+
+### Tooling Note
+
+The example app now uses Vite for local development and production builds.
+
+- `npm run dev` starts the Vite dev server
+- `npm run build` creates a production bundle
+- `npm run preview` serves the production bundle locally
