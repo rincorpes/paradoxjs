@@ -6,7 +6,7 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "paradoxjs": ["../../src/index.ts"]
+      "@rincorpes/paradoxjs": ["../../src/index.ts"]
     },
     "useDefineForClassFields": true,
     "strict": true,

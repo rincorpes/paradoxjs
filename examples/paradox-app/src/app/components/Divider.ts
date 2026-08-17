@@ -1,4 +1,4 @@
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 
 // Define the Divider component.
 // This component will be used to separate the other components.

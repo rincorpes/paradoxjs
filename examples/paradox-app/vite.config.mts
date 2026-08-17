@@ -4,7 +4,7 @@ import { defineConfig } from "vite";
 export default defineConfig({
   resolve: {
     alias: {
-      "paradoxjs": path.resolve(__dirname, "../../src/index.ts"),
+      "@rincorpes/paradoxjs": path.resolve(__dirname, "../../src/index.ts"),
     },
   },
   server: {
