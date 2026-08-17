@@ -9,15 +9,15 @@
     A small utility belt for DOM work, routing, and browser-side glue code.
     <br>
     ·
-    <a href="https://github.com/ProjectPenrose/paradox/labels/bug">Report Bugs</a>
+    <a href="https://github.com/rincorpes/paradoxjs/labels/bug">Report Bugs</a>
     ·
-    <a href="https://github.com/ProjectPenrose/paradox/labels/enhancement">Request Features</a>
+    <a href="https://github.com/rincorpes/paradoxjs/labels/enhancement">Request Features</a>
   </p>
   <p align="center">
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/ProjectPenrose/paradox">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/ProjectPenrose/paradox">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/ProjectPenrose/paradox">
-    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/ProjectPenrose/paradox">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/rincorpes/paradoxjs">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/rincorpes/paradoxjs">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/rincorpes/paradoxjs">
+    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/rincorpes/paradoxjs">
   </p>
   <p align="center">
     <b>IMPORTANT: Things are changing a lot right now, so please be patient, this is a work in progress</b>
@@ -59,7 +59,7 @@ The goal is simple: make repetitive client-side work easier while staying close 
 
 Paradox is not trying to replace React, Vue, Angular, or the DOM itself. If a feature pushes the project toward "framework" territory, it should earn its place very carefully.
 
-Contributions are welcome. Please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
+Contributions are welcome. Please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
 
 **Link to the** <a href="https://www.npmjs.com/package/penrose-paradox">npm package</a>
 
@@ -81,7 +81,7 @@ Paradox is a small vanilla JavaScript utility library that currently provides:
 
 1. Clone the repo
    ```sh
-   git clone git@github.com:ProjectPenrose/paradox.git
+   git clone git@github.com:rincorpes/paradoxjs.git
     ```
 2. Install NPM packages
     ```sh
@@ -431,7 +431,7 @@ Paradox.pubsub.publish("myEvent", "Hello World!");
 
 ### Examples
 
-You can find some examples in the [`examples` folder.](https://github.com/ProjectPenrose/paradox/tree/main/examples/Readme.md)
+You can find some examples in the [`examples` folder.](https://github.com/rincorpes/paradoxjs/tree/main/examples/Readme.md)
 
 ## Contributing
 
@@ -439,7 +439,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See [`LICENSE`](https://github.com/ProjectPenrose/paradox?tab=MIT-1-ov-file) for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/rincorpes/paradoxjs?tab=MIT-1-ov-file) for more information.
 
 ## Contact
 
@@ -447,9 +447,9 @@ Santiago Rincon - [@alexsc6955](https://linkedin.com/in/alexsc6955)
 
 ## Roadmap
 
-See the [ROADMAP.md](https://github.com/ProjectPenrose/paradox/ROADMAP.md) for a list of proposed features (and known issues).
+See the [ROADMAP.md](https://github.com/rincorpes/paradoxjs/ROADMAP.md) for a list of proposed features (and known issues).
 
-If you have any ideas, please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) and we can figure it out together.
+If you have any ideas, please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) and we can figure it out together.
 
 ## Acknowledgements
 

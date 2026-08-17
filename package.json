@@ -38,10 +38,10 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ProjectPenrose/paradox.git"
+    "url": "https://github.com/rincorpes/paradoxjs.git"
   },
   "bugs": {
-    "url": "https://github.com/ProjectPenrose/paradox/issues"
+    "url": "https://github.com/rincorpes/paradoxjs/issues"
   },
   "devDependencies": {
     "@types/jest": "^29.5.11",
