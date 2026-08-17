@@ -1,7 +1,14 @@
 import Paradox from "penrose-paradox";
+
+type ButtonProps = {
+  message?: string;
+  text?: string;
+  onClick?: EventListener;
+};
+
 // Define the Button component.
 // This component will be used to publish a message when the button is clicked and show the function of the pubsub module.
-export default function Button(props: { [key: string]: any } = {}) {
+export default function Button(props: ButtonProps = {}) {
   function handleClick() {
     const { message } = props;
     Paradox.pubsub.publish("button-clicked", { message });
@@ -9,13 +16,10 @@ export default function Button(props: { [key: string]: any } = {}) {
 
   const { text = "Write message", onClick = handleClick } = props;
 
-  return {
-    tag: "button",
-    options: {
-      text: text,
-      events: {
-        click: onClick
-      }
+  return Paradox.buildElement("button", {
+    text,
+    events: {
+      click: onClick
     }
-  }
+  });
 }

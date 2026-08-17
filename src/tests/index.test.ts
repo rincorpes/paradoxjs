@@ -1,7 +1,8 @@
 import Paradox from "../index";
 
 const { buildElement, Router, pubsub } = Paradox;
-import { ParadoxElementOptions, ParadoxElementChildren } from "../core/buildElement/types";
+const { delegate } = Paradox;
+import { ParadoxElementOptions } from "../core/buildElement/types";
 
 describe('Paradox', () => {
   it("should be an object", () => {
@@ -18,91 +19,118 @@ describe('Paradox', () => {
     });
 
     it ("should return an HTMLElement", () => {
-      let element = buildElement("div");
+      const element = buildElement("div");
       expect(element instanceof HTMLElement).toBe(true);
     });
 
-    describe('options', () => {
-      const options = {
-        id: "test",
-        classList: "test test2",
-        attributes: { "data-test": "test" },
-        text: "test",
-        style: { color: "red" },
-        children: Array<object>(),
-        events: {}
-      };
-
-      let element = buildElement("div", options as ParadoxElementOptions);
-
-      it("should set the ID if provided", () => {
-        expect(element.id).toBe(options.id);
-      });
-
-      it("should add classes if provided", () => {
-        const classList = options.classList.split(" ");
-        for (let className of classList) {
-          expect(element.classList.contains(className)).toBe(true);
-        }
-      });
-
-      it("should set attributes if provided", () => {
-        for (let [key, value] of Object.entries(options.attributes)) {
-          expect(element.getAttribute(key)).toBe(value);
-        }
-      });
-
-      it("should set text content if provided", () => {
-        expect(element.textContent).toBe(options.text);
-      });
-
-      it("should set inline styles if provided", () => {
-        for (let [key, value] of Object.entries(options.style)) {
-          expect((element.style as any)[key]).toBe(value);
-        }
-      });
-
-      describe("children", () => {
-        const children = [
-          { tag: "span" },
-          { tag: "span" },
-          {
-            tag: "span", options: {
-              children: [
-                { tag: "span" },
-                { tag: "span" }
-              ]
-            }
-          }
-        ];
-        options.children = children;
-
-        element = buildElement("div", options as ParadoxElementOptions);
-
-        it("should append children if provided", () => {
-          expect(element.children.length).toBe(children.length);
-        });
-
-        it("should append nested children if provided", () => {
-          if (element.children[2] && children[2].options) {
-            expect(element.children[2].children.length).toBe(children[2].options.children.length);
-          }
-        });
-      });
-
-      describe("events", () => {
-        const events = {
-          click: (ev: { target: any }) => {
-            return ev.target;
+    describe("options", () => {
+      it("should apply id, classes, text, attributes, data, aria, and style", () => {
+        const element = buildElement("section", {
+          id: "test",
+          className: ["card", "rounded"],
+          classList: "shadow-sm",
+          text: "hello",
+          attributes: {
+            title: "Paradox",
+            hidden: false,
+            draggable: true,
           },
-        };
-        options.events = events;
+          data: {
+            userId: 42,
+          },
+          aria: {
+            label: "Greeting card",
+          },
+          style: {
+            color: "red",
+            zIndex: 3,
+            "--card-tone": "warm",
+          },
+        } as ParadoxElementOptions);
 
-        element = buildElement("div", options as ParadoxElementOptions);
+        expect(element.id).toBe("test");
+        expect(element.className).toBe("card rounded shadow-sm");
+        expect(element.textContent).toBe("hello");
+        expect(element.getAttribute("title")).toBe("Paradox");
+        expect(element.hasAttribute("hidden")).toBe(false);
+        expect(element.getAttribute("draggable")).toBe("");
+        expect(element.getAttribute("data-user-id")).toBe("42");
+        expect(element.getAttribute("aria-label")).toBe("Greeting card");
+        expect(element.style.color).toBe("red");
+        expect(element.style.zIndex).toBe("3");
+        expect(element.style.getPropertyValue("--card-tone")).toBe("warm");
+      });
 
-        it("should add event listeners if provided", () => {
-          expect(element.onclick).toBeDefined();
+      it("should append text, descriptors, nodes, nested arrays, and numbers as children", () => {
+        const existingNode = document.createElement("strong");
+        existingNode.textContent = "existing";
+
+        const element = buildElement("div", {
+          text: "prefix",
+          children: [
+            " message ",
+            7,
+            false,
+            null,
+            undefined,
+            existingNode,
+            {
+              tag: "span",
+              options: {
+                text: "child",
+              },
+            },
+            [
+              {
+                tag: "em",
+                options: {
+                  text: "nested",
+                },
+              },
+            ],
+          ],
         });
+
+        expect(element.textContent).toBe("prefix message 7existingchildnested");
+        expect(element.querySelector("strong")?.textContent).toBe("existing");
+        expect(element.querySelector("span")?.textContent).toBe("child");
+        expect(element.querySelector("em")?.textContent).toBe("nested");
+      });
+
+      it("should support multiple event handlers predictably", () => {
+        const firstHandler = jest.fn();
+        const secondHandler = jest.fn();
+
+        const button = buildElement("button", {
+          events: {
+            click: [firstHandler, secondHandler],
+          },
+        });
+
+        button.click();
+
+        expect(firstHandler).toHaveBeenCalledTimes(1);
+        expect(secondHandler).toHaveBeenCalledTimes(1);
+      });
+
+      it("should preserve legacy descriptor children for compatibility", () => {
+        const element = buildElement("div", {
+          children: [
+            { tag: "span" },
+            {
+              tag: "span",
+              options: {
+                children: [
+                  { tag: "span", options: { text: "nested child" } },
+                ],
+              },
+            },
+          ],
+        });
+
+        expect(element.children.length).toBe(2);
+        expect(element.children[1]?.children.length).toBe(1);
+        expect(element.children[1]?.children[0]?.textContent).toBe("nested child");
       });
     });
   });
@@ -111,10 +139,143 @@ describe('Paradox', () => {
     expect(Paradox.hasOwnProperty("Router")).toBe(true);
   });
 
+  it("should have delegate property", () => {
+    expect(Paradox.hasOwnProperty("delegate")).toBe(true);
+  });
+
+  describe("delegate", () => {
+    afterEach(() => {
+      document.body.innerHTML = "";
+    });
+
+    it("should be a function", () => {
+      expect(typeof delegate).toBe("function");
+    });
+
+    it("should trigger a delegated handler for a matching selector", () => {
+      document.body.innerHTML = `
+        <button data-role="refresh-dashboard">
+          <span>Refresh preview</span>
+        </button>
+      `;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("span")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should pass the matched element to the delegated handler", () => {
+      document.body.innerHTML = `
+        <button data-role="refresh-dashboard">
+          <span>Refresh preview</span>
+        </button>
+      `;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("span")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler.mock.calls[0][1]).toBe(
+        document.querySelector('[data-role="refresh-dashboard"]'),
+      );
+      cleanup();
+    });
+
+    it("should support multiple delegated handlers for the same selector", () => {
+      document.body.innerHTML = `<button data-role="refresh-dashboard">Refresh</button>`;
+
+      const firstHandler = jest.fn();
+      const secondHandler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': [firstHandler, secondHandler],
+        },
+      });
+
+      document.querySelector("button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(firstHandler).toHaveBeenCalledTimes(1);
+      expect(secondHandler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should respect the provided root element scope", () => {
+      document.body.innerHTML = `
+        <section id="inside">
+          <button data-role="refresh-dashboard">Inside</button>
+        </section>
+        <section id="outside">
+          <button data-role="refresh-dashboard">Outside</button>
+        </section>
+      `;
+
+      const handler = jest.fn();
+      const root = document.querySelector("#inside") as HTMLElement;
+      const cleanup = delegate(root, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      document.querySelector("#outside button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+      document.querySelector("#inside button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).toHaveBeenCalledTimes(1);
+      cleanup();
+    });
+
+    it("should return a cleanup function that removes the listeners", () => {
+      document.body.innerHTML = `<button data-role="refresh-dashboard">Refresh</button>`;
+
+      const handler = jest.fn();
+      const cleanup = delegate(document, {
+        click: {
+          '[data-role="refresh-dashboard"]': handler,
+        },
+      });
+
+      cleanup();
+
+      document.querySelector("button")?.dispatchEvent(
+        new MouseEvent("click", { bubbles: true }),
+      );
+
+      expect(handler).not.toHaveBeenCalled();
+    });
+  });
+
   describe('Router', () => {
     it("should be a function", () => {
       expect(typeof Router).toBe("function");
     });
+
+    async function waitForRouter() {
+      await Promise.resolve();
+      await Promise.resolve();
+    }
 
     function Home() {
       document.body.innerHTML = `<div>Home <a href="/about?hello=world">About</a></div>`;
@@ -123,10 +284,21 @@ describe('Paradox', () => {
     const routes = [
       { path: "/", component: Home },
     ];
-    const router = new Router({ routes, baseUrl: "http://localhost" });
+    let router: InstanceType<typeof Router>;
+
+    beforeEach(() => {
+      document.body.innerHTML = "";
+      window.history.replaceState({}, "", "/");
+      router = new Router({ routes, baseUrl: "http://localhost" });
+    });
+
+    afterEach(() => {
+      router.destroy();
+      document.body.innerHTML = "";
+      window.history.replaceState({}, "", "/");
+    });
 
     describe("Objcet properties", () => {
-
       it("should have routes property", () => {
         expect(router.hasOwnProperty("routes")).toBe(true);
       });
@@ -154,10 +326,20 @@ describe('Paradox', () => {
       it("should have init method", () => {
         expect(typeof router.init).toBe("function");
       });
+
+      it("should have navigate method", () => {
+        expect(typeof router.navigate).toBe("function");
+      });
+
+      it("should have destroy method", () => {
+        expect(typeof router.destroy).toBe("function");
+      });
     });
 
     describe("init", () => {
-      router.init();
+      beforeEach(async () => {
+        await router.init();
+      });
       
       it("should set the path", () => {
         expect(router.path).toBe("/");
@@ -191,16 +373,208 @@ describe('Paradox', () => {
       });
 
       describe("/user/:id route", () => {
+        let userRouter: InstanceType<typeof Router>;
         const routes = [
           { path: "/", component: Home },
           { path: "/user/:id", component: Home },
         ];
-        const router = new Router({ routes, baseUrl: "http://localhost" });
-        router.init();
+
+        beforeEach(async () => {
+          window.history.replaceState({}, "", "/user/123");
+          userRouter = new Router({ routes, baseUrl: "http://localhost" });
+          await userRouter.init();
+        });
+
+        afterEach(() => {
+          userRouter.destroy();
+          window.history.replaceState({}, "", "/");
+        });
 
         it("should set pathSegments", () => {
-          expect(router.routes[1].pathSegments).toEqual(["", "user", ":id"]);
+          expect(userRouter.routes[1].pathSegments).toEqual(["", "user", ":id"]);
         });
+
+        it("should set params for dynamic segments", () => {
+          expect(userRouter.params.get("id")).toBe("123");
+        });
+      });
+    });
+
+    describe("navigation", () => {
+      it("should re-run the route and cleanup on same-path navigation", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        let renderCount = 0;
+        let cleanupCount = 0;
+        const rerenderRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: `Home render ${renderCount}`,
+                  }),
+                );
+                renderCount += 1;
+
+                return () => {
+                  cleanupCount += 1;
+                };
+              },
+            },
+          ],
+        });
+
+        await rerenderRouter.init();
+        await rerenderRouter.navigate("/");
+
+        expect(renderCount).toBe(2);
+        expect(cleanupCount).toBe(1);
+        expect(root.textContent).toBe("Home render 1");
+
+        rerenderRouter.destroy();
+      });
+
+      it("should reset params when navigating away from a dynamic route", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+        window.history.replaceState({}, "", "/user/42");
+
+        const statefulRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/user/:id",
+              props: { root },
+              component: ({ root: outlet, params }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: `User ${params?.get("id")}`,
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await statefulRouter.init();
+        expect(statefulRouter.params.get("id")).toBe("42");
+
+        await statefulRouter.navigate("/about");
+
+        expect(statefulRouter.path).toBe("/about");
+        expect(statefulRouter.params.size).toBe(0);
+        expect(root.textContent).toBe("About page");
+
+        statefulRouter.destroy();
+      });
+
+      it("should intercept same-origin links after init", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        const appRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("a", {
+                    text: "About",
+                    attributes: {
+                      href: "/about",
+                    },
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await appRouter.init();
+
+        const link = root.querySelector("a");
+        link?.dispatchEvent(new MouseEvent("click", {
+          bubbles: true,
+          cancelable: true,
+        }));
+        await waitForRouter();
+
+        expect(appRouter.path).toBe("/about");
+        expect(root.textContent).toBe("About page");
+
+        appRouter.destroy();
+      });
+
+      it("should render the active route on popstate", async () => {
+        const root = document.createElement("div");
+        document.body.append(root);
+
+        const appRouter = new Router({
+          baseUrl: "http://localhost",
+          routes: [
+            {
+              path: "/",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "Home page",
+                  }),
+                );
+              },
+            },
+            {
+              path: "/about",
+              props: { root },
+              component: ({ root: outlet }) => {
+                outlet.replaceChildren(
+                  Paradox.buildElement("div", {
+                    text: "About page",
+                  }),
+                );
+              },
+            },
+          ],
+        });
+
+        await appRouter.init();
+        window.history.pushState({}, "", "/about");
+        window.dispatchEvent(new PopStateEvent("popstate"));
+        await waitForRouter();
+
+        expect(appRouter.path).toBe("/about");
+        expect(root.textContent).toBe("About page");
+
+        appRouter.destroy();
       });
     });
   });

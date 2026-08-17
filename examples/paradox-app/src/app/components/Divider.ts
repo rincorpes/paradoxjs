@@ -1,10 +1,9 @@
+import Paradox from "penrose-paradox";
+
 // Define the Divider component.
 // This component will be used to separate the other components.
-export default function Divider(props = {}) {
-  return {
-    tag: "hr",
-    options: {
-      classList: "my-4"
-    }
-  }
+export default function Divider() {
+  return Paradox.buildElement("hr", {
+    classList: "my-4"
+  });
 }

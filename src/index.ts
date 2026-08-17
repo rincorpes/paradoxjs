@@ -1,4 +1,5 @@
 import buildElement from "./core/buildElement";
+import delegate from "./core/delegate";
 import Router from "./core/Router";
 import pubsub from "./core/Pubsub";
 import buildApp from "./core/buildApp";
@@ -8,6 +9,7 @@ import buildApp from "./core/buildApp";
  */
 const Paradox = {
   buildElement,
+  delegate,
   Router,
   pubsub,
   buildApp,

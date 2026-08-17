@@ -1,23 +1,23 @@
 
 <p align="center">
 
-  <h1 align="center">&lt;Paradox/&gt; Not another javascript framework!</h1>
+  <h1 align="center">&lt;Paradox/&gt;</h1>
 
   <p align="center">
-    Paradox is just a simple vanilla javascript library for DOM manipulation.
+    The batteries I wish vanilla JavaScript came with.
     <br>
-    Hopefully it will ease your development while learning
+    A small utility belt for DOM work, routing, and browser-side glue code.
     <br>
     ·
-    <a href="https://github.com/ProjectPenrose/paradox/labels/bug">Report Bugs</a>
+    <a href="https://github.com/rincorpes/paradoxjs/labels/bug">Report Bugs</a>
     ·
-    <a href="https://github.com/ProjectPenrose/paradox/labels/enhancement">Request Features</a>
+    <a href="https://github.com/rincorpes/paradoxjs/labels/enhancement">Request Features</a>
   </p>
   <p align="center">
-    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/ProjectPenrose/paradox">
-    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/ProjectPenrose/paradox">
-    <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/ProjectPenrose/paradox">
-    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/ProjectPenrose/paradox">
+    <img alt="GitHub contributors" src="https://img.shields.io/github/contributors/rincorpes/paradoxjs">
+    <img alt="GitHub commit activity" src="https://img.shields.io/github/commit-activity/w/rincorpes/paradoxjs">
+    <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/rincorpes/paradoxjs">
+    <img alt="GitHub pull requests" src="https://img.shields.io/github/issues-pr/rincorpes/paradoxjs">
   </p>
   <p align="center">
     <b>IMPORTANT: Things are changing a lot right now, so please be patient, this is a work in progress</b>
@@ -36,10 +36,12 @@
   - [Installation](#installation)
   - [Paradox from npm](#paradox-from-npm)
     - [Project structure example](#project-structure-example)
-    - [Webpack config](#webpack-config)
-  - [Paradox as a module in a simple html project](#paradox-as-a-module-in-a-simple-html-project)
+    - [Vite config](#vite-config)
+  - [Paradox in plain HTML projects](#paradox-in-plain-html-projects)
+- [API Stability](#api-stability)
 - [Documentation](#documentation)
   - [Build an element with `Paradox.buildElement`](#build-an-element-with-paradoxbuildelement)
+  - [Enhance existing HTML with `Paradox.delegate`](#enhance-existing-html-with-paradoxdelegate)
   - [Routes with `Paradox.Router`](#routes-with-paradoxrouter)
   - [PubSub with `Paradox.pubsub`](#pubsub-with-paradoxpubsub)
   - [Examples](#examples)
@@ -51,15 +53,25 @@
 
 ## About The Project
 
-Working on cool stuff to say here. stay tuned and please be patient, this is a work in progress.
+Paradox is a vanilla JavaScript utility library for people who want a little more help from the browser without committing to a full framework.
 
-Contributions are welcome thogh xd, please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) to discuss what you would like to change, add or remove and we can figure it out together.
+The goal is simple: make repetitive client-side work easier while staying close to platform APIs. Think DOM creation helpers, a lightweight router, pub/sub utilities, and a few carefully chosen browser-side batteries.
+
+Paradox is not trying to replace React, Vue, Angular, or the DOM itself. If a feature pushes the project toward "framework" territory, it should earn its place very carefully.
+
+Contributions are welcome. Please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
 
 **Link to the** <a href="https://www.npmjs.com/package/penrose-paradox">npm package</a>
 
 ## Getting Started
 
-Paradox is a simple vanilla javascript library for DOM manipulation that also provides a simple router and PubSub implementation.
+Paradox is a small vanilla JavaScript utility library that currently provides:
+
+- DOM creation helpers
+- DOM enhancement helpers for existing markup
+- A simple router
+- A lightweight pub/sub implementation
+- An experimental reactive runtime that may change significantly
 
 ### Requirements
 
@@ -69,7 +81,7 @@ Paradox is a simple vanilla javascript library for DOM manipulation that also pr
 
 1. Clone the repo
    ```sh
-   git clone git@github.com:ProjectPenrose/paradox.git
+   git clone git@github.com:rincorpes/paradoxjs.git
     ```
 2. Install NPM packages
     ```sh
@@ -79,11 +91,11 @@ Paradox is a simple vanilla javascript library for DOM manipulation that also pr
 
 ## Usage
 
-Now things can change depending on what you want to do, so here are some options:
+Paradox is meant to be adopted incrementally. Use the parts that help, ignore the rest.
 
 ### Paradox from npm
 
-You can use paradox in a project that uses npm, all you need before getting started is to have webpack set with babel loader.
+You can use Paradox in any modern frontend toolchain. A small Vite setup is the easiest place to start.
 
 Then you can install it like this:
 ```sh
@@ -95,210 +107,311 @@ Then you can import it like this:
 import Paradox from "penrose-paradox";
 ```
 
-Now you'll have access to all the paradox features in your node projects.
+Now you'll have access to Paradox in your project.
 
 #### Project structure example
 
-Here's an example of a project structure that uses paradox:
+Here's an example of a project structure that uses Paradox with Vite:
 
 ```sh
 . # root
-├── app
-│   ├── index.js
-│   └── index.html
+├── src
+│   ├── main.js
+│   └── style.scss
 ├── dist
-│   ├── css
-│   │   └── main.css
-│   └── js
-│       └── bundle.js
+├── index.html
 ├── node_modules
 ├── package.json
 ├── package-lock.json
-├── server
-│   └── index.js
-├── scss
-│   └── main.scss
-└── webpack.config.js
+└── vite.config.js
 ```
 
-- The `app` folder contains the html project and the javascript entry point file where you can import paradox.
-- The `dist` folder contains the built project and it's generated by webpack.
+- The `src` folder contains the app entry point and styles where you can import Paradox.
+- The `dist` folder contains the production build generated by Vite.
+- The `index.html` file is the HTML entry used by Vite during development and build.
 - The `node_modules` folder contains the npm packages for the project.
 - The `package.json` file contains the project info and the npm scripts.
 - The `package-lock.json` file contains the npm packages info.
-- The `server` folder contains a simple Nodejs server that serves the `dist` folder and redirects all the requests to the `index.html` file.
-- The `scss` folder contains a simple `main.scss` and it should be compiled to `dist/css/main.css`.
-- The `webpack.config.js` file contains the webpack config.
+- The `vite.config.js` file contains the Vite config.
 
-#### Webpack config
+#### Vite config
 
 ```javascript
-const path = require("path");
+import { defineConfig } from "vite";
 
-module.exports = {
-  entry: {
-    "js/bundle": "./app/index.js",
+export default defineConfig({
+  server: {
+    host: "localhost",
+    port: 3040,
   },
-  target: "web",
-  mode: "development",
-  output: {
-    filename: "[name].js",
-    path: path.resolve(__dirname, "dist"),
+  preview: {
+    host: "localhost",
+    port: 3040,
   },
-  module: {
-    rules: [
-      {
-          test: /\.(js)$/,
-          exclude: /(node_modules|bower_components)/,
-          use: {
-              loader: 'babel-loader',
-          }
-      },
-    ],
-  },
-  // ... other config
-}
+});
 ```
 
-### Paradox as a module in a simple HTML project
+### Paradox in plain HTML projects
 
-If you want to use it as a module in a simple HTML project, you should import it in your script like this:
+Paradox is currently packaged for npm-based tooling with a single root entry point and an `exports` map. For package consumers, prefer:
 
-```html
-<script type="module">
-  import Paradox from "./path/to/penrose-paradox/build/index.js";
-</script>
+```javascript
+import Paradox from "penrose-paradox";
 ```
+
+This works well in modern tooling such as bundlers, test runners, and Node-aware build pipelines.
+
+Paradox does not currently ship a browser-native ESM bundle for direct `<script type="module">` usage without a build step. If that becomes an important use case again, it should be added as a separate package target rather than relying on internal output files.
+
+Avoid relying on deep package paths, since they are considered internal and are not part of the supported public package surface.
+
+## API Stability
+
+Paradox currently uses three API stability tiers.
+
+### Stable
+
+These are the supported public APIs for this iteration:
+
+- `Paradox.buildElement`
+- `Paradox.delegate`
+- `Paradox.Router`
+- `Paradox.pubsub`
+- The default `Paradox` export from `penrose-paradox`
+
+These utilities reflect the main direction of the library as a vanilla JavaScript utility belt.
+
+### Experimental
+
+These APIs exist, but may change significantly or be removed while the project is refined:
+
+- `Paradox.buildApp`
+
+`buildApp` is currently an experiment in reactive rendering. It is not yet part of the stable core identity of Paradox.
+
+### Internal
+
+Anything outside the top-level package entry should currently be treated as internal and unsupported for external use. This includes:
+
+- Deep imports such as `penrose-paradox/build/core/...`
+- Source-level imports such as `src/core/...`
+- Helper modules under `core/buildApp/*` and `core/buildElement/*`
+- Internal types that are not exported from the package root
+
+Those paths expose implementation details rather than supported public API. The only documented consumer import style for this iteration is the package root:
+
+```js
+import Paradox from "penrose-paradox";
+```
+
+### TypeScript Note
+
+Paradox does not yet have a finalized stable type export strategy. For now:
+
+- Runtime imports from the package root are supported
+- Deep-imported types should be treated as internal
+- If you need app-specific helper types today, prefer defining them in your own project instead of importing Paradox internals
+- Type exports will be revisited as part of the packaging and API cleanup work
 
 ## Documentation
 
-Paradox includes the following features:
+Paradox currently includes the following public utilities:
 
 ### Build an element with `Paradox.buildElement`
 
-Paradox provides a simple way to build an element with the `buildElement` function that takes the element name and an object with the element properties as arguments.
+Paradox provides a small DOM helper with the `buildElement` function. It is meant to reduce repetitive DOM setup work while staying close to browser primitives.
 
 **Properties:**
 
 | Property | Type | Description |
 | --- | --- | --- |
 | id | string | The element id |
-| classList | string | The element class list separated by spaces |
-| attributes | object | The element attributes (e.g. type, value, etc.) |
-| events | object | The element events (e.g. click, change, etc.) |
-| style | object | The element style (e.g. backgroundColor, color, etc.) |
-| text | string | The element text |
-| children | array | The element children |
+| className | string \| string[] | Class name(s) for the element |
+| classList | string \| string[] | Additional class name(s) for the element |
+| attributes | object | Standard HTML attributes |
+| data | object | `data-*` attributes using camelCase or snake_case keys |
+| aria | object | `aria-*` attributes using camelCase or snake_case keys |
+| events | object | Event listeners, including arrays of handlers |
+| style | object | Inline styles using camelCase keys or CSS custom properties |
+| text | string \| number | Text appended before child nodes |
+| children | array | Strings, numbers, existing nodes, descriptors, or nested arrays |
 
 ```javascript
 import Paradox from "penrose-paradox";
 
-function handleButtonClick() {
-  alert("Hello World!");
-}
-
-const myButton = {
-  id: "myButton",
-  classList: "btn btn-primary",
+const button = Paradox.buildElement("button", {
+  className: ["btn", "btn-primary"],
   attributes: {
     type: "button",
   },
+  data: {
+    trackingId: "cta-1",
+  },
+  aria: {
+    label: "Open details",
+  },
   events: {
-    click: handleButtonClick,
+    click: [
+      () => console.log("primary click"),
+      () => console.log("analytics event"),
+    ],
   },
-  style: {
-    backgroundColor: "red",
-  },
-  text: "Click me!",
-  children: [
-    {
-      tag: "i",
-      options: {
-        id: "myButtonIcon",
-        classList: "fas fa-hand-pointer",
-      }
-    },
-  ],
-}
+  text: "Open details",
+});
 
-document.body.appendChild(Paradox.buildElement("button", myButton));
+const card = Paradox.buildElement("section", {
+  id: "hero-card",
+  classList: "card shadow-sm",
+  style: {
+    padding: "1rem",
+    "--accent-color": "#ef4444",
+  },
+  children: [
+    Paradox.buildElement("h2", { text: "Paradox" }),
+    "The batteries I wish vanilla JavaScript came with.",
+    button,
+  ],
+});
+
+document.body.appendChild(card);
 ```
 
 **NOTES:**
-- The `buildElement` function will return a `HTMLElement` object.
-- The `children` property is an array of objects with the `tag` and `options` properties. The `tag` property is the element name and the `options` property is the object with the element properties.
-- The `options` property is optional, so you can pass just the `tag` property and it will return an element with no properties.
+- The `buildElement` function returns an actual DOM element.
+- Children can be plain text, DOM nodes, nested arrays, or legacy `{ tag, options }` descriptors.
+- Event entries can be a single handler or an array of handlers.
+- `data` and `aria` keys are translated into `data-*` and `aria-*` attributes automatically.
 
-### Routes with `Paradox.Router`
+### Enhance existing HTML with `Paradox.delegate`
 
-Paradox provides a simple router to handle the navigation between pages.
+`Paradox.delegate` helps you attach behavior to existing markup without re-rendering it. This is useful when your HTML already exists and you just want a clean way to wire interactions.
 
 ```javascript
 import Paradox from "penrose-paradox";
 
-function Home(props) {
-  const { root } = props;
-  root.append(Paradox.buildElement("div", {
-    id: "home",
-    text: "Welcome to Paradox!",
-  }));
+Paradox.delegate(document, {
+  click: {
+    '[data-role="refresh-dashboard"]': async (_event, button) => {
+      const originalLabel = button.textContent?.trim() || "Refresh preview";
+
+      button.setAttribute("disabled", "");
+      button.textContent = "Refreshing...";
+
+      try {
+        await refreshDashboard();
+      } finally {
+        button.removeAttribute("disabled");
+        button.textContent = originalLabel;
+      }
+    },
+  },
+});
+```
+
+**NOTES:**
+- `delegate` works well with static HTML and `data-*` selectors.
+- Handlers receive both the native event and the matched element.
+- You can register multiple handlers for the same selector by passing an array.
+- The function returns a cleanup callback that removes the delegated listeners.
+
+### Routes with `Paradox.Router`
+
+`Paradox.Router` is a small History API router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and route props injection without trying to become an application framework.
+
+```javascript
+import Paradox from "penrose-paradox";
+
+function Home({ root }) {
+  root.replaceChildren(
+    Paradox.buildElement("div", {
+      children: [
+        Paradox.buildElement("h1", {
+          text: "Welcome to Paradox!",
+        }),
+        Paradox.buildElement("a", {
+          text: "About",
+          attributes: {
+            href: "/about?name=Paradox",
+          },
+        }),
+      ],
+    })
+  );
 }
 
-function About(props) {
-  const { name, root } = props;
-  root.append(Paradox.buildElement("div", {
-    id: "about",
-    text: `Paradox is a simple vanilla javascript library for DOM manipulation. This is the ${name} page.`,
-  }));
+function About({ root, query }) {
+  root.replaceChildren(
+    Paradox.buildElement("div", {
+      children: [
+        Paradox.buildElement("h1", {
+          text: `About ${query?.get("name") || ""}`.trim(),
+        }),
+        Paradox.buildElement("a", {
+          text: "Home",
+          attributes: {
+            href: "/",
+          },
+        }),
+      ],
+    })
+  );
 }
 
 const root = document.getElementById("root");
+const baseUrl = document.querySelector("base")?.href || window.location.origin;
 
 const routes = [
   {
     path: "/",
     component: Home,
-    props: {
-      root,
-    },
+    props: { root },
   },
   {
     path: "/about",
     component: About,
-    props: {
-      name: "About",
-      root,
-    },
+    props: { root },
   },
 ];
 
-const router = new Paradox.Router(routes);
-router.init()
-  .then((path) => {
-    console.info(`The current path is: ${path}`);
-  })
-  .catch((error) => {
-    console.error(error);
-  });
+const router = new Paradox.Router({ routes, baseUrl });
+
+router.init().catch((error) => {
+  console.error(error);
+});
 ```
 
-**NOTES:**
-- The router will look for the `#` in the url to handle the navigation. For example, if the url is `http://localhost:8080/#/about`, the router will navigate to the `/about` path.
-- The router will inject the `props` object into the component function as an argument and it will contain, besides the properties that you pass, the following properties:
-  - `queryString`: A string with the query parameters. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `queryString` will be `?name=Paradox`.
-  - `params`: An object with the path parameters. For example, if the url is `http://localhost:8080/about/Paradox`, and the path is `/about/:name`, the `params` object will be `{ name: "Paradox" }`.
-  - `query`: An object with the query parameters. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `query` object will be `{ name: "Paradox" }`.
-  - `baseUrl`: A string with the base url. For example, if the url is `http://localhost:8080/about?name=Paradox`, the `baseUrl` will be `http://localhost:8080`.
+You can also navigate in code:
+
+```javascript
+router.navigate("/about?name=Paradox");
+```
+
+Route handlers receive the props you pass plus a few router-specific values:
+
+- `queryString`: The current query string, like `?name=Paradox`
+- `query`: A `URLSearchParams` instance for the current URL
+- `params`: A `Map` of dynamic route params, like `id` from `/users/:id`
+- `baseUrl`: The router base URL
+- `path`: The matched path
+- `route`: The matched route definition
+- `router`: The active router instance
+
+If a route component or layout returns a function, Paradox will call it before the next route renders. That gives you a tiny cleanup hook for removing listeners, unsubscribing, or tearing down page-specific work.
+
+**Scope notes:**
+- This router is meant for simple browser navigation, not nested routing, data loaders, transitions, or SSR concerns.
+- After `init()`, same-origin links inside the app are intercepted automatically and routed through the History API.
+- If the current URL uses a `#/path` hash, Paradox will still resolve it on load for backward compatibility, but regular path-based URLs are the preferred mode for this iteration.
 
 ### PubSub with `Paradox.pubsub`
 
-Paradox provides a simple PubSub implementation to handle the communication between components.
+Paradox provides a simple PubSub implementation to handle communication between independent parts of a page or app.
 
 In case you're not familiar, PubSub is a popular messaging pattern in software architecture. It stands for Publish-Subscribe pattern and is used for communication between different parts of an application or between different applications.
 
 In the PubSub pattern, publishers send messages without knowing who the subscribers are. Subscribers, on the other hand, express interest in one or more events and only receive messages that are of interest, without knowing who sent them.
 
-This pattern is widely used in event-driven programming and can help to decouple the components of an application, leading to code that is easier to maintain and extend. In the context of Paradox, it allows components to communicate with each other in a decoupled manner.
+This pattern is widely used in event-driven programming and can help decouple different parts of an application, leading to code that is easier to maintain and extend.
 
 ```javascript
 import Paradox from "penrose-paradox";
@@ -311,14 +424,14 @@ Paradox.pubsub.publish("myEvent", "Hello World!");
 ```
 
 **NOTES:**
-- You can use pubsub to communicate between components, for example, you can publish an event in a component and subscribe to it in another component. This way you can pass data between components without having to use props.
+- You can use pubsub to communicate between separate modules, widgets, or route handlers without wiring them directly together.
 - Subscriptions are not persistent, so if you subscribe to an event and then navigate to another page, the subscription will be lost.
 - You can use the `Paradox.pubsub.unsubscribe` method to unsubscribe from an event.
 - You can not publish an event before subscribing to it xd.
 
 ### Examples
 
-You can find some examples in the [`examples` folder.](https://github.com/ProjectPenrose/paradox/tree/main/examples/Readme.md)
+You can find some examples in the [`examples` folder.](https://github.com/rincorpes/paradoxjs/tree/main/examples/Readme.md)
 
 ## Contributing
 
@@ -326,7 +439,7 @@ Contributions are what make the open source community such an amazing place to b
 
 ## License
 
-Distributed under the MIT License. See [`LICENSE`](https://github.com/ProjectPenrose/paradox?tab=MIT-1-ov-file) for more information.
+Distributed under the MIT License. See [`LICENSE`](https://github.com/rincorpes/paradoxjs?tab=MIT-1-ov-file) for more information.
 
 ## Contact
 
@@ -334,9 +447,9 @@ Santiago Rincon - [@alexsc6955](https://linkedin.com/in/alexsc6955)
 
 ## Roadmap
 
-See the [ROADMAP.md](https://github.com/ProjectPenrose/paradox/ROADMAP.md) for a list of proposed features (and known issues).
+See the [ROADMAP.md](https://github.com/rincorpes/paradoxjs/ROADMAP.md) for a list of proposed features (and known issues).
 
-If you have any ideas, please [start a discussion](https://github.com/ProjectPenrose/paradox/discussions/categories/ideas) and we can figure it out together.
+If you have any ideas, please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) and we can figure it out together.
 
 ## Acknowledgements
 
