@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.0.0] - 2026-08-17
+
+### Fixed
+- update node versions in CI workflow for paradoxjs
+- rename paradoxjs package
+
+### Changed
+- Add reusable CI workflows for npm package management and notifications
+- Solve conflicts from PR 29
+- update old link names
+- Add AGENTS.md file
+
 ## [0.4.10] - 2024-01-24
 ### Removed
   - `createElement` function and related files
@@ -129,4 +141,3 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 ## [0.0.2] - 2023-03-11
 ### Added
 * `concurrently` package to allow run the app just with `npm run dev` By [@alexsc6955](https://github.com/alexsc6955)
-
