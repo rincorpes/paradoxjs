@@ -1,10 +1,10 @@
 {
-  "name": "penrose-paradox",
+  "name": "paradoxjs",
   "version": "0.4.10",
   "description": "The batteries I wish vanilla JavaScript came with",
   "keywords": [
-    "penrose",
     "paradox",
+    "paradoxjs",
     "javascript",
     "DOM manipulation",
     "vanilla-js",

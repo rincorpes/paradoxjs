@@ -32,7 +32,7 @@ You can use each utility on its own:
 All documented consumer examples use the package root:
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 ```
 
 Avoid building on deep internal paths from the published package, since they are intentionally not part of the supported public API.
@@ -42,7 +42,7 @@ Avoid building on deep internal paths from the published package, since they are
 `Paradox.Router` is a small browser router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and light props injection without trying to be a framework.
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 function Home({ root }) {
   root.replaceChildren(
@@ -121,7 +121,7 @@ Keep it small on purpose:
 `Paradox.pubsub` is a lightweight event bus for page-level communication.
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 function logMessage(data) {
   console.log("received:", data);
@@ -143,7 +143,7 @@ This is useful when:
 `Paradox.buildElement` helps create DOM nodes without forcing you into a component runtime.
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 const element = Paradox.buildElement("section", {
   id: "message-box",
@@ -192,7 +192,7 @@ Use it when you want a small abstraction over:
 `Paradox.delegate` is useful when the HTML already exists and you want to enhance it with lightweight behavior.
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 Paradox.delegate(document, {
   click: {
@@ -257,3 +257,4 @@ The example app now uses Vite for local development and production builds.
 - `npm run dev` starts the Vite dev server
 - `npm run build` creates a production bundle
 - `npm run preview` serves the production bundle locally
+

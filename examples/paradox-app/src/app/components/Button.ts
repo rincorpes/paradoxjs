@@ -1,4 +1,4 @@
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 type ButtonProps = {
   message?: string;
@@ -23,3 +23,4 @@ export default function Button(props: ButtonProps = {}) {
     }
   });
 }
+

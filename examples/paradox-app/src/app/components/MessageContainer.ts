@@ -1,4 +1,4 @@
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 import { MessageContainerProps } from "../types";
 
 // Define the MessageContainer component.
@@ -17,3 +17,4 @@ export default function MessageContainer(props: MessageContainerProps = {}) {
     id: "messageContainer",
   });
 }
+

@@ -1,4 +1,4 @@
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 import { ExamplePageProps } from "../types";
 
 // Import components
@@ -52,3 +52,4 @@ export default function Home(props: ExamplePageProps = {}) {
     })
   );
 }
+

@@ -61,7 +61,7 @@ Paradox is not trying to replace React, Vue, Angular, or the DOM itself. If a fe
 
 Contributions are welcome. Please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
 
-**Link to the** <a href="https://www.npmjs.com/package/penrose-paradox">npm package</a>
+**Link to the** <a href="https://www.npmjs.com/package/paradoxjs">npm package</a>
 
 ## Getting Started
 
@@ -85,7 +85,7 @@ Paradox is a small vanilla JavaScript utility library that currently provides:
     ```
 2. Install NPM packages
     ```sh
-    cd penrose-paradox
+    cd paradoxjs
     npm install
     ```
 
@@ -99,12 +99,12 @@ You can use Paradox in any modern frontend toolchain. A small Vite setup is the 
 
 Then you can install it like this:
 ```sh
-npm i penrose-paradox
+npm i paradoxjs
 ```
 
 Then you can import it like this:
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 ```
 
 Now you'll have access to Paradox in your project.
@@ -156,7 +156,7 @@ export default defineConfig({
 Paradox is currently packaged for npm-based tooling with a single root entry point and an `exports` map. For package consumers, prefer:
 
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 ```
 
 This works well in modern tooling such as bundlers, test runners, and Node-aware build pipelines.
@@ -177,7 +177,7 @@ These are the supported public APIs for this iteration:
 - `Paradox.delegate`
 - `Paradox.Router`
 - `Paradox.pubsub`
-- The default `Paradox` export from `penrose-paradox`
+- The default `Paradox` export from `paradoxjs`
 
 These utilities reflect the main direction of the library as a vanilla JavaScript utility belt.
 
@@ -193,7 +193,7 @@ These APIs exist, but may change significantly or be removed while the project i
 
 Anything outside the top-level package entry should currently be treated as internal and unsupported for external use. This includes:
 
-- Deep imports such as `penrose-paradox/build/core/...`
+- Deep imports such as `paradoxjs/build/core/...`
 - Source-level imports such as `src/core/...`
 - Helper modules under `core/buildApp/*` and `core/buildElement/*`
 - Internal types that are not exported from the package root
@@ -201,7 +201,7 @@ Anything outside the top-level package entry should currently be treated as inte
 Those paths expose implementation details rather than supported public API. The only documented consumer import style for this iteration is the package root:
 
 ```js
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 ```
 
 ### TypeScript Note
@@ -237,7 +237,7 @@ Paradox provides a small DOM helper with the `buildElement` function. It is mean
 | children | array | Strings, numbers, existing nodes, descriptors, or nested arrays |
 
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 const button = Paradox.buildElement("button", {
   className: ["btn", "btn-primary"],
@@ -287,7 +287,7 @@ document.body.appendChild(card);
 `Paradox.delegate` helps you attach behavior to existing markup without re-rendering it. This is useful when your HTML already exists and you just want a clean way to wire interactions.
 
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 Paradox.delegate(document, {
   click: {
@@ -319,7 +319,7 @@ Paradox.delegate(document, {
 `Paradox.Router` is a small History API router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and route props injection without trying to become an application framework.
 
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 function Home({ root }) {
   root.replaceChildren(
@@ -414,7 +414,7 @@ In the PubSub pattern, publishers send messages without knowing who the subscrib
 This pattern is widely used in event-driven programming and can help decouple different parts of an application, leading to code that is easier to maintain and extend.
 
 ```javascript
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 Paradox.pubsub.subscribe("myEvent", (data) => {
   console.log(data);
@@ -454,3 +454,4 @@ If you have any ideas, please [start a discussion](https://github.com/rincorpes/
 ## Acknowledgements
 
 * [K2](https://github.com/k2con) - For not letting me use React in their projects xd.
+

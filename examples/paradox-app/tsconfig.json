@@ -6,7 +6,7 @@
     "moduleResolution": "Bundler",
     "baseUrl": ".",
     "paths": {
-      "penrose-paradox": ["../../src/index.ts"]
+      "paradoxjs": ["../../src/index.ts"]
     },
     "useDefineForClassFields": true,
     "strict": true,

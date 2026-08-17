@@ -1,4 +1,4 @@
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 import "../scss/main.scss";
 
 // Import pages
@@ -35,3 +35,4 @@ const router = new Paradox.Router({ routes, baseUrl });
 router.init()
   .then((path) => console.info(`Navigated to ${path}`))
   .catch(error => console.error(error));
+

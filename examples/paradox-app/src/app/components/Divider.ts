@@ -1,4 +1,4 @@
-import Paradox from "penrose-paradox";
+import Paradox from "paradoxjs";
 
 // Define the Divider component.
 // This component will be used to separate the other components.
@@ -7,3 +7,4 @@ export default function Divider() {
     classList: "my-4"
   });
 }
+
