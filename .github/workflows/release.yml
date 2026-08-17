@@ -27,10 +27,11 @@ jobs:
       changelog_file: CHANGELOG.md
       package_manifest: package.json
       lockfile_path: package-lock.json
+      tag_prefix: paradoxjs-v
       install_command: npm ci
       build_command: npm run build
       verify_command: npm run test:ci
-      publish_command: npm publish
+      publish_command: npm publish --access=public
     secrets:
       PACKAGE_REGISTRY_TOKEN: ${{ secrets.NPM_TOKEN }}
       SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}

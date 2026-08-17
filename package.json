@@ -1,5 +1,5 @@
 {
-  "name": "paradoxjs",
+  "name": "@rincorpes/paradoxjs",
   "version": "0.4.10",
   "description": "The batteries I wish vanilla JavaScript came with",
   "keywords": [
@@ -38,7 +38,7 @@
   "license": "ISC",
   "repository": {
     "type": "git",
-    "url": "https://github.com/rincorpes/paradoxjs.git"
+    "url": "git+https://github.com/rincorpes/paradoxjs.git"
   },
   "bugs": {
     "url": "https://github.com/rincorpes/paradoxjs/issues"

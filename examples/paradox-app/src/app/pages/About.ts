@@ -1,4 +1,4 @@
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 import { ExamplePageProps } from "../types";
 
 // Import components

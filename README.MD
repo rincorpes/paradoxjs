@@ -61,7 +61,7 @@ Paradox is not trying to replace React, Vue, Angular, or the DOM itself. If a fe
 
 Contributions are welcome. Please [start a discussion](https://github.com/rincorpes/paradoxjs/discussions/categories/ideas) if you want to propose a change so we can keep the scope intentional.
 
-**Link to the** <a href="https://www.npmjs.com/package/paradoxjs">npm package</a>
+**Link to the** <a href="https://www.npmjs.com/package/@rincorpes/paradoxjs">npm package</a>
 
 ## Getting Started
 
@@ -99,12 +99,12 @@ You can use Paradox in any modern frontend toolchain. A small Vite setup is the 
 
 Then you can install it like this:
 ```sh
-npm i paradoxjs
+npm i @rincorpes/paradoxjs
 ```
 
 Then you can import it like this:
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 ```
 
 Now you'll have access to Paradox in your project.
@@ -156,7 +156,7 @@ export default defineConfig({
 Paradox is currently packaged for npm-based tooling with a single root entry point and an `exports` map. For package consumers, prefer:
 
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 ```
 
 This works well in modern tooling such as bundlers, test runners, and Node-aware build pipelines.
@@ -177,7 +177,7 @@ These are the supported public APIs for this iteration:
 - `Paradox.delegate`
 - `Paradox.Router`
 - `Paradox.pubsub`
-- The default `Paradox` export from `paradoxjs`
+- The default `Paradox` export from `@rincorpes/paradoxjs`
 
 These utilities reflect the main direction of the library as a vanilla JavaScript utility belt.
 
@@ -193,7 +193,7 @@ These APIs exist, but may change significantly or be removed while the project i
 
 Anything outside the top-level package entry should currently be treated as internal and unsupported for external use. This includes:
 
-- Deep imports such as `paradoxjs/build/core/...`
+- Deep imports such as `@rincorpes/paradoxjs/build/core/...`
 - Source-level imports such as `src/core/...`
 - Helper modules under `core/buildApp/*` and `core/buildElement/*`
 - Internal types that are not exported from the package root
@@ -201,7 +201,7 @@ Anything outside the top-level package entry should currently be treated as inte
 Those paths expose implementation details rather than supported public API. The only documented consumer import style for this iteration is the package root:
 
 ```js
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 ```
 
 ### TypeScript Note
@@ -237,7 +237,7 @@ Paradox provides a small DOM helper with the `buildElement` function. It is mean
 | children | array | Strings, numbers, existing nodes, descriptors, or nested arrays |
 
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 
 const button = Paradox.buildElement("button", {
   className: ["btn", "btn-primary"],
@@ -287,7 +287,7 @@ document.body.appendChild(card);
 `Paradox.delegate` helps you attach behavior to existing markup without re-rendering it. This is useful when your HTML already exists and you just want a clean way to wire interactions.
 
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 
 Paradox.delegate(document, {
   click: {
@@ -319,7 +319,7 @@ Paradox.delegate(document, {
 `Paradox.Router` is a small History API router for simple SPAs. It handles route matching, same-origin link interception, `popstate`, and route props injection without trying to become an application framework.
 
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 
 function Home({ root }) {
   root.replaceChildren(
@@ -414,7 +414,7 @@ In the PubSub pattern, publishers send messages without knowing who the subscrib
 This pattern is widely used in event-driven programming and can help decouple different parts of an application, leading to code that is easier to maintain and extend.
 
 ```javascript
-import Paradox from "paradoxjs";
+import Paradox from "@rincorpes/paradoxjs";
 
 Paradox.pubsub.subscribe("myEvent", (data) => {
   console.log(data);

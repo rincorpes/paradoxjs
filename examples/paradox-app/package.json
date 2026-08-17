@@ -24,6 +24,6 @@
     "vite": "^5.4.8"
   },
   "dependencies": {
-    "paradoxjs": "file:../.."
+    "@rincorpes/paradoxjs": "file:../.."
   }
 }
