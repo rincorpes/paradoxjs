@@ -1,0 +1,38 @@
+name: Release ParadoxJS
+
+on:
+  workflow_dispatch:
+    inputs:
+      bump_type:
+        description: Semantic version bump to publish
+        required: true
+        type: choice
+        options:
+          - major
+          - minor
+          - patch
+        default: major
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    uses: rincorpes/rincorpes-workflows/.github/workflows/npm-package-release.yml@main
+    with:
+      bump_type: ${{ inputs.bump_type }}
+      stable_branch: main
+      working_directory: .
+      node_version: "20"
+      changelog_file: CHANGELOG.md
+      package_manifest: package.json
+      lockfile_path: package-lock.json
+      install_command: npm ci
+      build_command: npm run build
+      verify_command: npm run test:ci
+      publish_command: npm publish
+    secrets:
+      PACKAGE_REGISTRY_TOKEN: ${{ secrets.NPM_TOKEN }}
+      SLACK_BOT_TOKEN: ${{ secrets.SLACK_BOT_TOKEN }}
+      SLACK_CHANNEL_ID_RELEASE: ${{ secrets.SLACK_CHANNEL_ID_RELEASE }}
+      DISCORD_WEBHOOK_URL_RELEASE: ${{ secrets.DISCORD_WEBHOOK_URL_RELEASE }}
